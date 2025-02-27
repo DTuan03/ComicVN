@@ -13,7 +13,7 @@ class DetailViewModel {
     let itemsDetail = BehaviorRelay<[DetailModel]>(value: [])
     let itemsTrending = BehaviorRelay<[DetailModel]>(value: [])
     let itemsNewComic = BehaviorRelay<[DetailModel]>(value: [])
-    
+    let itemsCategory = BehaviorRelay<[CategoryModel]>(value: [])
 
     
     init() {
@@ -28,8 +28,17 @@ class DetailViewModel {
             DetailModel(image: UIImage(named: "test"), name: "Captain America", rating: 5, author: "Stan Lee", category: "Siêu Anh Hùng", views: "25.895.100")
         ]
         
+        let categoryData = [
+            CategoryModel(image: UIImage(named: "topTruyen"), title: "TOP TRUYỆN", hastag: "#TRUYỆN HAY"),
+            CategoryModel(image: UIImage(named: "topTruyen"), title: "XẾP HẠNG", hastag: "#ĐỌC NHIỀU NHẤT"),
+            CategoryModel(image: UIImage(named: "topTruyen"), title: "THỂ LOẠI", hastag: "#CHUYÊN MỤC"),
+            CategoryModel(image: UIImage(named: "topTruyen"), title: "BOOK MARK", hastag: "#TRUYỆN CỦA BẠN"),
+        ]
+        
+        
         itemsDetail.accept(exampleData)
         itemsTrending.accept(exampleData)
         itemsNewComic.accept(exampleData)
+        itemsCategory.accept(categoryData)
     }
 }

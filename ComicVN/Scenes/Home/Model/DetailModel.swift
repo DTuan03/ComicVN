@@ -15,3 +15,9 @@ struct DetailModel {
     let category: String?
     let views: String?
 }
+
+struct CategoryModel {
+    let image: UIImage?
+    let title: String
+    let hastag: String
+}

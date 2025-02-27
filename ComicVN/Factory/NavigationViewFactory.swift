@@ -10,7 +10,7 @@ import SnapKit
 class NavigationViewFactory {
     static func createNavigationView(leftImage: UIImage? = nil, title: String, right1Image: UIImage? = nil, right2Image: UIImage? = nil) -> UIView {
         let view = UIView()
-
+//        view.backgroundColor = .blue
         view.snp.makeConstraints { make in
             make.height.equalTo(44)
         }
@@ -51,6 +51,7 @@ class NavigationViewFactory {
         lineView.snp.makeConstraints { make in
             make.top.equalTo(leftButton.snp.bottom).offset(7)
             make.right.left.equalToSuperview()
+            make.height.equalTo(1)
         }
         
         return view

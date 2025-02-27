@@ -12,7 +12,9 @@ class UIViewFactory {
     static func createLineView() -> UIView {
         let screenWidth = UIScreen.main.bounds.width
         
-        let lineView = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 1))
+        let lineView = UIView()
+//        lineView.frame.size.height = 0.5
+        lineView.frame.size.width = screenWidth
         lineView.backgroundColor = UIColor(hex: "#E8E7E7")
         
         return lineView

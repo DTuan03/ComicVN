@@ -28,7 +28,7 @@ class HomeViewController: BaseViewController {
     let detailCollectionView = CollectionViewFactory.createCollectionView(left: 6, right: 16, width: 315, height: 165)
     let trendingCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20, width: 80, height: 177)
     let newComicCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20, width: 80, height: 177)
-    let categoryCollectionView = CollectionViewFactory.createCollectionView()
+    let categoryCollectionView = CollectionViewFactory.createCollectionView(estimated: false, left: 24)
    
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +63,7 @@ class HomeViewController: BaseViewController {
             make.top.equalTo(detailCollectionView.snp.bottom).offset(20)
             make.left.equalToSuperview().offset(18)
         }
+        
         contentView.addSubview(moreOptionsImage)
         moreOptionsImage.snp.makeConstraints { make in
             make.top.equalTo(detailCollectionView.snp.bottom).offset(30.5)
@@ -86,7 +87,11 @@ class HomeViewController: BaseViewController {
         contentView.addSubview(categoryLabel)
         categoryLabel.snp.makeConstraints { make in
             make.top.equalTo(newComicCollectionView.snp.bottom).offset(34)
+            make.left.equalToSuperview().offset(16)
+//            make.bottom.equalToSuperview()
         }
+        
+        setupCategoryCollectionView()
     }
     
     private func setupDetailCollectionView() {
@@ -122,12 +127,26 @@ class HomeViewController: BaseViewController {
             make.top.equalTo(newComicLabel.snp.bottom).offset(5)
             make.left.right.equalToSuperview()
             make.height.equalTo(250)
-            make.bottom.equalToSuperview()
+//            make.bottom.equalToSuperview()
         }        
         newComicCollectionView.register(TrendingCell.self, forCellWithReuseIdentifier: TrendingCell.identifier)
         newComicCollectionView.dataSource = self
         newComicCollectionView.delegate = self
     }
+    
+    private func setupCategoryCollectionView() {
+        contentView.addSubview(categoryCollectionView)
+        categoryCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(categoryLabel.snp.bottom).offset(17)
+            make.left.right.equalToSuperview()
+            make.height.equalTo(185)
+            make.bottom.equalToSuperview().offset(-40)
+        }
+        categoryCollectionView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifier)
+        categoryCollectionView.dataSource = self
+        categoryCollectionView.delegate = self
+    }
+
     
     private func bindViewModels() {
         
@@ -152,6 +171,13 @@ class HomeViewController: BaseViewController {
                 self.newComicCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
+        
+        viewModel.itemsCategory
+            .subscribe(onNext: { [weak self] newItems in
+                guard let self = self else {return}
+                self.categoryCollectionView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -159,11 +185,13 @@ extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView {
         case detailCollectionView:
-            return viewModel.itemsTrending.value.count
+            return viewModel.itemsDetail.value.count
         case trendingCollectionView:
             return viewModel.itemsTrending.value.count
-        default:
+        case newComicCollectionView:
             return viewModel.itemsTrending.value.count
+        default:
+            return viewModel.itemsCategory.value.count
         }
     }
     
@@ -183,11 +211,18 @@ extension HomeViewController: UICollectionViewDataSource {
             let model = viewModel.itemsTrending.value[indexPath.item]
             cell.configData(with: model)
             return cell
-        default:
+        case newComicCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrendingCell.identifier, for: indexPath) as? TrendingCell else {
                 return UICollectionViewCell()
             }
             let model =  viewModel.itemsNewComic.value[indexPath.item]
+            cell.configData(with: model)
+            return cell
+        default:
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifier, for: indexPath) as? CategoryCell else {
+                return UICollectionViewCell()
+            }
+            let model =  viewModel.itemsCategory.value[indexPath.item]
             cell.configData(with: model)
             return cell
         }
@@ -198,8 +233,13 @@ extension HomeViewController: UICollectionViewDelegate {
     
 }
 
-//extension HomeViewController: UICollectionViewDelegateFlowLayout {
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: <#T##Double#>, height: <#T##Double#>)
-//    }
-//}
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if collectionView == categoryCollectionView {
+            let widthScreen = UIScreen.main.bounds.width
+            let width = (widthScreen - 74) / 2
+            return CGSize(width: width, height: 84)
+        }
+        return CGSize(width: 0, height: 0)
+    }
+}

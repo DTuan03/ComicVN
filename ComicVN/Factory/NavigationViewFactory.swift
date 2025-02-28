@@ -7,10 +7,18 @@
 import UIKit
 import SnapKit
 
+protocol NavigationViewDelegate: AnyObject {
+    func didTapLeftButton(in view: UIView)
+}
+
 class NavigationViewFactory {
-    static func createNavigationView(leftImage: UIImage? = nil, title: String, right1Image: UIImage? = nil, right2Image: UIImage? = nil) -> UIView {
+    static func createNavigationView(leftImage: UIImage? = nil,
+                                     title: String,
+                                     right1Image: UIImage? = nil,
+                                     right2Image: UIImage? = nil,
+                                     delegate: NavigationViewDelegate? = nil
+    ) -> UIView {
         let view = UIView()
-//        view.backgroundColor = .blue
         view.snp.makeConstraints { make in
             make.height.equalTo(44)
         }
@@ -22,6 +30,10 @@ class NavigationViewFactory {
         let right2Button = createButton(withImage: right2Image)
         
         let lineView = UIViewFactory.createLineView()
+        
+        leftButton.addTargetClosure { _ in
+            delegate?.didTapLeftButton(in: view)
+        }
         
         view.addSubview(leftButton)
         leftButton.snp.makeConstraints { make in

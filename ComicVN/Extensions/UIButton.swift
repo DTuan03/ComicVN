@@ -6,23 +6,43 @@
 //
 
 import UIKit
-//
-//extension UIButton {
-//    func setImageWithText(image: UIImage?, position: NSLayoutConstraint.Axis = .horizontal, padding: CGFloat = 8) {
-//        guard let image = image else { return }
-//        
-//        self.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
-//        self.imageView?.contentMode = .scaleAspectFit
-//        
-//        if position == .horizontal {
-//            self.semanticContentAttribute = .forceLeftToRight
-//            self.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: padding)
-//            self.titleEdgeInsets = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: 0)
-//        } else {
-//            self.semanticContentAttribute = .forceRightToLeft
-//            self.imageEdgeInsets = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: 0)
-//            self.titleEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: padding)
-//        }
-//    }
-//}
-//
+
+extension UIButton {
+    @objc func titleAndIcon(hspacing: CGFloat) {
+        let insetAmount = hspacing / 2
+        switch semanticContentAttribute {
+        case .forceRightToLeft:
+          self.imageEdgeInsets = UIEdgeInsets(top: 0, left: insetAmount, bottom: 0, right: -insetAmount)
+          self.titleEdgeInsets = UIEdgeInsets(top: 0, left: -insetAmount, bottom: 0, right: insetAmount)
+        default:
+          self.imageEdgeInsets = UIEdgeInsets(top: 0, left: -insetAmount, bottom: 0, right: insetAmount)
+          self.titleEdgeInsets = UIEdgeInsets(top: 0, left: insetAmount, bottom: 0, right: -insetAmount)
+        }
+        self.contentEdgeInsets = UIEdgeInsets(top: 0, left: insetAmount, bottom: 0, right: insetAmount)
+      }
+    
+}
+
+private var ActionKey: UInt8 = 0
+
+extension UIButton {
+    private class ClosureWrapper: NSObject {
+        let closure: (UIButton) -> ()
+        init(_ closure: @escaping (UIButton) -> ()) {
+            self.closure = closure
+        }
+    }
+
+    func addTargetClosure(closure: @escaping (UIButton) -> ()) {
+        objc_setAssociatedObject(self, &ActionKey, ClosureWrapper(closure), .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        addTarget(self, action: #selector(invokeAction), for: .touchUpInside)
+    }
+
+    @objc private func invokeAction() {
+        if let wrapper = objc_getAssociatedObject(self, &ActionKey) as? ClosureWrapper {
+            wrapper.closure(self)
+        }
+    }
+}
+
+

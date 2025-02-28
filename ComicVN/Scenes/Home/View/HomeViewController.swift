@@ -9,11 +9,19 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
+import QuartzCore
 
-class HomeViewController: BaseViewController {
+class HomeViewController: BaseViewController, NavigationViewDelegate {
+    func didTapLeftButton(in view: UIView) {
+        let menuVC = MenuViewController()
+        menuVC.modalPresentationStyle = .overFullScreen
+        self.present(menuVC, animated: false, completion: nil)
+    }
+
     private var viewModel = DetailViewModel()
     
-    let navigationView = NavigationViewFactory.createNavigationView(leftImage: UIImage(named: "menu"), title: "Trang chủ", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"))
+    var navigationView: UIView!
+    
     let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true, bounces: false)
     let contentView = UIView()
     
@@ -36,6 +44,8 @@ class HomeViewController: BaseViewController {
     }
     
     override func setupUI() {
+        navigationView = NavigationViewFactory.createNavigationView(leftImage: UIImage(named: "menu"), title: "Trang chủ", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
+        
         view.addSubview(navigationView)
         navigationView.snp.makeConstraints{ make in
             make.top.equalToSuperview().offset(44)
@@ -179,6 +189,9 @@ class HomeViewController: BaseViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+    override func setupEvent() {
+    }
 }
 
 extension HomeViewController: UICollectionViewDataSource {
@@ -230,7 +243,6 @@ extension HomeViewController: UICollectionViewDataSource {
 }
 
 extension HomeViewController: UICollectionViewDelegate {
-    
 }
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout {

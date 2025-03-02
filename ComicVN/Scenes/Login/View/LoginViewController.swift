@@ -15,12 +15,12 @@ class LoginViewController: BaseViewController {
     let imageView = ImageViewFactory.createImageView(image: UIImage(named: "avartar"), contentMode: .scaleAspectFit)
     let emailTextField = TextFieldFactory.createTextField(placeholder: "Email", font: .medium18, textAlignment: .left, rounded: true, height: 48)
     let passTextField = TextFieldFactory.createTextField(placeholder: "Mật khẩu", font: .medium18, textAlignment: .left, rounded: true, height: 48)
-    let loginButton = ButtonFactory.createButton("Đăng nhập", rounded: true, height: 48)
+    let loginButton = ButtonFactory.createButton("Đăng nhập", rounded: true)
     let forgotPassLabel = LabelFactory.createLabel(text: "Quên mật khẩu?", font: .regular16, textColor: UIColor(hex: "#FF7B00"), textAlignment: .center)
     let orLoginLabel = LabelFactory.createLabel(text: "hoặc Đăng nhập bằng mạng xã hội", font: .regular16, textColor: UIColor(hex: "#434040"), textAlignment: .center)
-    let googleButton = ButtonFactory.createButton("Đăng nhập bằng Google", image: UIImage(named: "logoGG"), font: .medium16, textColor: .black, bgColor: UIColor(hex: "#F6F6F6"), rounded: true, height: 48)
-    let appleButton = ButtonFactory.createButton("Đăng nhập bằng Apple", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#3B5998"), rounded: true, height: 38)
-    let faceBookButton = ButtonFactory.createButton("Đăng nhập bằng Facebook", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#000000"), rounded: true, height: 38)
+    let googleButton = ButtonFactory.createButton("Đăng nhập bằng Google", image: UIImage(named: "logoGG"), font: .medium16, textColor: .black, bgColor: UIColor(hex: "#F6F6F6"), rounded: true)
+    let appleButton = ButtonFactory.createButton("Đăng nhập bằng Apple", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#3B5998"), rounded: true)
+    let faceBookButton = ButtonFactory.createButton("Đăng nhập bằng Facebook", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#000000"), rounded: true)
     let signUpLabel = LabelFactory.createLabel(text: "Đăng ký", font: .bold18, textAlignment: .center)
     
     override func viewDidLoad() {
@@ -29,6 +29,7 @@ class LoginViewController: BaseViewController {
             .subscribe(onNext: { [weak self] success, errorMessage, userId in
                 if success {
                     print("Đăng nhập thành công với userId: \(userId)")
+                    self?.navigationController?.pushViewController(HomeViewController(), animated: false)
                 } else {
                     print("Lỗi đăng nhập: \(errorMessage ?? "")")
                 }
@@ -54,6 +55,7 @@ class LoginViewController: BaseViewController {
         loginButton.snp.makeConstraints { make in
             make.top.equalTo(stackViewTextField.snp.bottom).offset(29)
             make.left.right.equalToSuperview().inset(30)
+            make.height.equalTo(48)
         }
         view.addSubview(forgotPassLabel)
         forgotPassLabel.snp.makeConstraints { make in
@@ -66,10 +68,13 @@ class LoginViewController: BaseViewController {
             make.centerX.equalToSuperview()
         }
         let stackViewSignOther = [googleButton, faceBookButton, appleButton].vStack(12, alignment: .fill, distribution: .fill)
+        googleButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 21)
+        stackViewSignOther.distribution = .fillEqually
         view.addSubview(stackViewSignOther)
         stackViewSignOther.snp.makeConstraints { make in
             make.top.equalTo(orLoginLabel.snp.bottom).offset(35)
             make.left.right.equalToSuperview().inset(30)
+            make.height.equalTo(138)
         }
         
         view.addSubview(signUpLabel)
@@ -85,7 +90,7 @@ class LoginViewController: BaseViewController {
         loginButton.addTarget(self, action: #selector(signIn), for: .touchUpInside)
     }
     
-    //MARK: - Chuyen man hinh sang dang nhap
+    //MARK: - Chuyen man hinh sang dang ky
     @objc func navigationToSignUp() {
         let signUpVC = SignUpViewController()
         navigationController?.pushViewController(signUpVC, animated: true)

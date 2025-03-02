@@ -11,10 +11,10 @@ class TrendingCell: UICollectionViewCell {
     static let identifier = "TrendingCell"
     
     let avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleAspectFill, radius: 10)
-    let nameLabel = LabelFactory.createLabel(font: UIFont.medium12, textColor: UIColor(hex: "#FF7B00"), textAlignment: .left)
-    let categoryLabel = LabelFactory.createLabel(font: UIFont.light10, textColor: UIColor(hex: "#434040"), textAlignment: .left)
-    let viewsLabel = LabelFactory.createLabel(font: UIFont.regular10, textColor: UIColor(hex: "#434040"), textAlignment: .left)
-    let cosmosView = CosmosViewFactory.createCosmosView(starSize: 16, starMargin: 2)
+    let nameLabel = LabelFactory.createLabel(font: UIFont.medium8, textColor: UIColor(hex: "#FF7B00"), textAlignment: .left)
+    let categoryLabel = LabelFactory.createLabel(font: UIFont.light6, textColor: UIColor(hex: "#434040"), textAlignment: .left)
+    let viewsLabel = LabelFactory.createLabel(font: UIFont.regular6, textColor: UIColor(hex: "#434040"), textAlignment: .left)
+    let cosmosView = CosmosViewFactory.createCosmosView(starSize: 8.5, starMargin: 4)
 
     
     override init(frame: CGRect) {
@@ -32,6 +32,8 @@ class TrendingCell: UICollectionViewCell {
         contentView.addSubview(avatarNameStackView)
         avatarNameStackView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
+            make.width.equalTo(80)
+
         }
         
         let infomationStackView = [categoryLabel, cosmosView, viewsLabel].vStack(5)
@@ -49,6 +51,5 @@ class TrendingCell: UICollectionViewCell {
         cosmosView.rating = detail.rating ?? 0
         categoryLabel.text = "Thể loại: \(String(describing: detail.category!))"
         viewsLabel.text = "Lượt xem: \(String(describing: detail.views!))"
-        print(detail)
     }
 }

@@ -10,26 +10,25 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-class SignUpViewController: BaseViewController {
+class SignUpViewController: BaseViewController, NavigationViewDelegate {
+    func didTapLeftButton(in view: UIView) {
+        navigationController?.popViewController(animated: true)
+    }
+    
     private let viewModel = AuthViewModel()
-    let viewNavigation: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(hex: "#DCDBDB")
-        return view
-    }()
-    let backButton = ButtonFactory.createButton(" Trở về", image: UIImage(systemName: "chevron.left"), font: .regular18 , textColor: UIColor(hex: "#FF7B00"), bgColor: .white, rounded: false, height: 24)
+    var navigationView = UIView()
     let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true, bounces: false)
     let contentView = UIView()
     let logoImageView = ImageViewFactory.createImageView(image: UIImage(named: "avartar"), contentMode: .scaleAspectFit)
     let nameTextField = TextFieldFactory.createTextField(placeholder: "Tên", font: .medium18, textAlignment: .left, rounded: true, height: 48)
     let emailTextField = TextFieldFactory.createTextField(placeholder: "Email", font: .medium18, textAlignment: .left, rounded: true, height: 48)
     let passTextField = TextFieldFactory.createTextField(placeholder: "Mật khẩu", font: .medium18, textAlignment: .left, rounded: true, height: 48)
-    let signUpButton = ButtonFactory.createButton("Đăng ký", rounded: true, height: 48)
+    let signUpButton = ButtonFactory.createButton("Đăng ký", rounded: true)
     let acceptTermsLabel = LabelFactory.createLabel(text: "Bằng cách xác nhận, bạn đồng ý với các \n Điều Khoản và Điều kiện của chúng tôi", font: .regular14, textColor: UIColor(hex: "#434040"), textAlignment: .center)
     let orLoginLabel = LabelFactory.createLabel(text: "hoặc Đăng nhập bằng mạng xã hội", font: .regular16, textColor: UIColor(hex: "#434040"), textAlignment: .center)
-    let googleButton = ButtonFactory.createButton("Đăng nhập bằng Google", image: UIImage(named: "logoGG"), font: .medium16, textColor: .black, bgColor: UIColor(hex: "#F6F6F6"), rounded: true, height: 38)
-    let appleButton = ButtonFactory.createButton("Đăng nhập bằng Apple", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#3B5998"), rounded: true, height: 38)
-    let faceBookButton = ButtonFactory.createButton("Đăng nhập bằng Facebook", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#000000"), rounded: true, height: 38)
+    let googleButton = ButtonFactory.createButton("Đăng nhập bằng Google", image: UIImage(named: "logoGG"), font: .medium16, textColor: .black, bgColor: UIColor(hex: "#F6F6F6"), rounded: true)
+    let appleButton = ButtonFactory.createButton("Đăng nhập bằng Apple", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#3B5998"), rounded: true)
+    let faceBookButton = ButtonFactory.createButton("Đăng nhập bằng Facebook", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#000000"), rounded: true)
     let signUpLabel = LabelFactory.createLabel(text: "Tôi đã có tài khoản", font: .bold18, textAlignment: .center)
     
     override func viewDidLoad() {
@@ -55,22 +54,15 @@ class SignUpViewController: BaseViewController {
     }
     
     override func setupUI() {
-        view.addSubview(backButton)
-        backButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(55)
-            make.left.equalToSuperview().offset(48)
-        }
-        
-        view.addSubview(viewNavigation)
-        viewNavigation.snp.makeConstraints { make in
-            make.top.equalTo(backButton.snp.bottom).offset(5.66)
+        navigationView = NavigationViewFactory.createSecondNavigationView(leftImage: .arrowLeft, titleButton: "Trở về", delegate: self)
+        view.addSubview(navigationView)
+        navigationView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview()
-            make.height.equalTo(1)
         }
-        
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(viewNavigation.snp.bottom)
+            make.top.equalTo(navigationView.snp.bottom).offset(1)
             make.left.equalToSuperview()
             make.right.equalToSuperview()
             make.bottom.equalToSuperview()
@@ -104,6 +96,7 @@ class SignUpViewController: BaseViewController {
         signUpButton.snp.makeConstraints { make in
             make.top.equalTo(stackViewTextField.snp.bottom).offset(60)
             make.left.right.equalToSuperview().inset(30)
+            make.height.equalTo(48)
         }
         contentView.addSubview(acceptTermsLabel)
         acceptTermsLabel.snp.makeConstraints { make in
@@ -126,7 +119,10 @@ class SignUpViewController: BaseViewController {
         stackViewSignOther.snp.makeConstraints { make in
             make.top.equalTo(orLoginLabel.snp.bottom).offset(20)
             make.left.right.equalToSuperview().inset(34)
+            make.height.equalTo(138)
         }
+        stackViewSignOther.distribution = .fillEqually
+        googleButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 21)
         contentView.addSubview(signUpLabel)
         signUpLabel.snp.makeConstraints { make in
             make.top.equalTo(stackViewSignOther.snp.bottom).offset(20)
@@ -144,12 +140,6 @@ class SignUpViewController: BaseViewController {
                 return
             }
             viewModel.registerUser(email: emailTextField.text ?? "", password: passTextField.text ?? "")
-        })
-        .disposed(by: disposeBag)
-        
-        backButton.rx.tap.subscribe(onNext: { [weak self] in
-            guard let self = self else { return }
-            navigationController?.popViewController(animated: true)
         })
         .disposed(by: disposeBag)
         

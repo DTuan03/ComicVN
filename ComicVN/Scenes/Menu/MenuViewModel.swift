@@ -6,12 +6,16 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 struct MenuSection {
     var items: [MenuItem]
 }
 
 class MenuViewModel {
+    static let shared = MenuViewModel()
+    let itemsMenu = BehaviorRelay<[MenuSection]>(value: [])
     
     var menuSections: [MenuSection] = [
         MenuSection(items: [
@@ -29,6 +33,10 @@ class MenuViewModel {
             MenuItem(title: "Chính sách bảo mật", iconName: "lock.fill", action: .privacyPolicy, isSelected: false)
         ])
     ]
+    
+    init() {
+        itemsMenu.accept(menuSections)
+    }
     
     func numberOfSections() -> Int {
         return menuSections.count
@@ -49,5 +57,6 @@ class MenuViewModel {
             }
         }
         menuSections[indexPath.section].items[indexPath.row].isSelected = true
+        itemsMenu.accept(menuSections)
     }
 }

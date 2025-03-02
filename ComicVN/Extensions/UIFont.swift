@@ -43,6 +43,10 @@ extension UIFont {
         return UIFont(name: "Livvic-Medium", size: 8) ?? UIFont.systemFont(ofSize: 8, weight: .medium)
     }
     
+    static var medium11: UIFont {
+        return UIFont(name: "Livvic-Medium", size: 11) ?? UIFont.systemFont(ofSize: 11, weight: .medium)
+    }
+    
     static var medium10: UIFont {
         return UIFont(name: "Livvic-Medium", size: 10) ?? UIFont.systemFont(ofSize: 10, weight: .medium)
     }
@@ -61,6 +65,10 @@ extension UIFont {
     
     static var medium18: UIFont {
         return UIFont(name: "Livvic-Medium", size: 18) ?? UIFont.systemFont(ofSize: 18, weight: .medium)
+    }
+    
+    static var semiBold18: UIFont {
+        return UIFont(name: "Livvic-SemiBold", size: 18) ?? UIFont.systemFont(ofSize: 18, weight: .medium)
     }
     
     static var medium20: UIFont {

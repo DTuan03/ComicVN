@@ -6,12 +6,15 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class MenuViewController: UIViewController {
     private let width = UIScreen.main.bounds.width
     private let height = UIScreen.main.bounds.height
     
     private let viewModel = MenuViewModel()
+    let disposeBag = DisposeBag()
     
     // MARK: - UI
     private lazy var avatarImage = ImageViewFactory.createImageView(image: UIImage(named: "avartarUser"),
@@ -25,7 +28,7 @@ class MenuViewController: UIViewController {
                                                 locationImageRight: true,
                                                 font: .medium12, textColor: .white,
                                                 bgColor: UIColor(hex: "#FF7B00"),
-                                                rounded: true, height: 30, padding: -10)
+                                                rounded: true, padding: -10)
         button.semanticContentAttribute = .forceRightToLeft
         return button
     }()
@@ -44,7 +47,7 @@ class MenuViewController: UIViewController {
                                                 image: UIImage(named: "smart"),
                                                 font: .medium14, textColor: UIColor(hex: "#DE4C3F"),
                                                 bgColor: UIColor(hex: "#FF9C8C", alpha: 0.29),
-                                                rounded: true, height: 19, padding: -15)
+                                                rounded: true, padding: -15)
         button.semanticContentAttribute = .forceRightToLeft
         button.frame.size.width = 112
         return button
@@ -55,7 +58,7 @@ class MenuViewController: UIViewController {
                                                 image: UIImage(named: "reading"),
                                                 font: .medium14, textColor: UIColor(hex: "#0B1329"),
                                                 bgColor: UIColor(hex: "#321910", alpha: 0.3),
-                                                rounded: true, height: 19, padding: -20)
+                                                rounded: true, padding: -20)
         button.semanticContentAttribute = .forceRightToLeft
         button.frame.size.width = 112
         return button
@@ -76,6 +79,8 @@ class MenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupEvent()
+        bindViewModels()
     }
     
     // MARK: - Setup UI
@@ -83,7 +88,7 @@ class MenuViewController: UIViewController {
         view.backgroundColor = UIColor(hex: "#C4C4C4", alpha: 0.6)
         let gradientView = createGradientView()
         view.addSubview(gradientView)
-        
+            
         let stackView = [readView, savedView].hStack(0, distribution: .fillEqually)
         
         gradientView.addSubviews([vInfo, containerView, tableView])
@@ -153,6 +158,7 @@ class MenuViewController: UIViewController {
             make.top.equalTo(titleLabel.snp.bottom)
             make.left.equalTo(avatarImage.snp.right).offset(12)
             make.width.equalTo(147)
+            make.height.equalTo(30)
         }
     }
     
@@ -169,6 +175,7 @@ class MenuViewController: UIViewController {
         readButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-14.23)
             make.left.right.equalToSuperview().inset(11)
+            make.height.equalTo(19)
         }
     }
     
@@ -185,6 +192,7 @@ class MenuViewController: UIViewController {
         savedButton.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-14.23)
             make.left.right.equalToSuperview().inset(11)
+            make.height.equalTo(19)
         }
     }
     
@@ -198,6 +206,38 @@ class MenuViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = 34
+    }
+    
+    private func setupEvent() {
+        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dismis))
+        swipe.direction = .left
+        self.view.addGestureRecognizer(swipe)
+        
+        let loginBtnTap = UITapGestureRecognizer(target: self, action: #selector(showLoginScrenn))
+        loginButton.addGestureRecognizer(loginBtnTap)
+    }
+    
+    @objc func dismis() {
+        self.dismiss(animated: false, completion: nil)
+    }
+    
+    @objc func showLoginScrenn() {
+        let loginVC = LoginViewController()
+        guard let navController = (self.presentingViewController as? UINavigationController) ?? self.presentingViewController?.navigationController else {
+            return
+        }
+        self.dismiss(animated: false) {
+            navController.pushViewController(loginVC, animated: false)
+        }
+    }
+    
+    private func bindViewModels() {
+        viewModel.itemsMenu
+            .subscribe(onNext: { [weak self] newItems in
+                guard let self = self else {return}
+                self.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -235,7 +275,6 @@ extension MenuViewController: UITableViewDataSource {
                 make.top.equalToSuperview()
                 make.height.equalTo(1)
             }
-            
             return headerView
         }
         return UIView()
@@ -251,25 +290,41 @@ extension MenuViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         viewModel.selectItem(at: indexPath)
-        tableView.reloadData()
+//        print(viewModel.menuSections)
         let selectedAction = viewModel.item(at: indexPath).action
         handleMenuSelection(for: selectedAction)
+        
     }
     
     private func handleMenuSelection(for action: MenuAction) {
+        func dissmissAndPush(viewController: UIViewController) {
+            guard let navController = (self.presentingViewController as? UINavigationController) ?? self.presentingViewController?.navigationController else {
+                return
+            }
+            
+            if let currentVC = navController.viewControllers.last, type(of: currentVC) == type(of: viewController) {
+                self.dismiss(animated: false)
+                return
+            }
+            
+            self.dismiss(animated: false) {
+                navController.pushViewController(viewController, animated: false)
+            }
+        }
+        
         switch action {
         case .home:
-            self.dismiss(animated: false)
+            dissmissAndPush(viewController: HomeViewController())
         case .categories:
-            print("Thể loại được chọn")
+            dissmissAndPush(viewController: CategoryViewController())
         case .topComics:
-            print("Top truyện được chọn")
+            dissmissAndPush(viewController: TopComicViewController())
         case .rankings:
-            print("Xếp hạng được chọn")
+            dissmissAndPush(viewController: RankingViewController())
         case .bookmark:
-            print("Bookmark được chọn")
+            dissmissAndPush(viewController: BookmarkViewController())
         case .settings:
-            print("Cài đặt được chọn")
+            dissmissAndPush(viewController: SettingViewController())
         case .rateApp:
             print("Đánh giá 5 sao")
         case .sendFeedback:

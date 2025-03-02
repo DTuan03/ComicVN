@@ -5,7 +5,6 @@
 //  Created by Tuấn on 26/2/25.
 //
 
-import Foundation
 import RxSwift
 import RxCocoa
 
@@ -13,7 +12,7 @@ class DetailViewModel {
     let itemsDetail = BehaviorRelay<[DetailModel]>(value: [])
     let itemsTrending = BehaviorRelay<[DetailModel]>(value: [])
     let itemsNewComic = BehaviorRelay<[DetailModel]>(value: [])
-    let itemsCategory = BehaviorRelay<[CategoryModel]>(value: [])
+    let itemsCategory = BehaviorRelay<[ListModel]>(value: [])
 
     
     init() {
@@ -29,10 +28,10 @@ class DetailViewModel {
         ]
         
         let categoryData = [
-            CategoryModel(image: UIImage(named: "topTruyen"), title: "TOP TRUYỆN", hastag: "#TRUYỆN HAY"),
-            CategoryModel(image: UIImage(named: "topTruyen"), title: "XẾP HẠNG", hastag: "#ĐỌC NHIỀU NHẤT"),
-            CategoryModel(image: UIImage(named: "topTruyen"), title: "THỂ LOẠI", hastag: "#CHUYÊN MỤC"),
-            CategoryModel(image: UIImage(named: "topTruyen"), title: "BOOK MARK", hastag: "#TRUYỆN CỦA BẠN"),
+            ListModel(image: UIImage(named: "topTruyen"), title: "TOP TRUYỆN", hastag: "#TRUYỆN HAY"),
+            ListModel(image: UIImage(named: "xepHang"), title: "XẾP HẠNG", hastag: "#ĐỌC NHIỀU NHẤT"),
+            ListModel(image: UIImage(named: "theLoai"), title: "THỂ LOẠI", hastag: "#CHUYÊN MỤC"),
+            ListModel(image: UIImage(named: "bookMark"), title: "BOOK MARK", hastag: "#TRUYỆN CỦA BẠN"),
         ]
         
         

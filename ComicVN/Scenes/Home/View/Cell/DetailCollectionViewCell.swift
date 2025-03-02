@@ -31,19 +31,28 @@ class DetailCollectionViewCell: UICollectionViewCell {
     }
     
     func setupUI() {
-        contentView.addSubview(avatarImageView)
-        let stackView = [nameLabel, cosmosView, authorLabel, categoryLabel, viewsLabel].vStack(5)
-
-        contentView.addSubview(stackView)
-        
+        let stackView = [authorLabel, categoryLabel, viewsLabel].vStack(3)
+        contentView.addSubviews([avatarImageView, nameLabel, cosmosView, stackView])
         avatarImageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(13)
             make.left.equalToSuperview().offset(15)
             make.bottom.equalToSuperview().offset(-13)
         }
-      
-        stackView.snp.makeConstraints { make in
+        nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(19)
+            make.left.equalTo(avatarImageView.snp.right).offset(17)
+            make.right.equalToSuperview()
+            make.height.equalTo(18)
+        }
+        
+        cosmosView.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(8)
+            make.left.equalTo(avatarImageView.snp.right).offset(17)
+            make.right.equalToSuperview()
+        }
+    
+        stackView.snp.makeConstraints { make in
+            make.top.equalTo(cosmosView.snp.bottom).offset(8)
             make.left.equalTo(avatarImageView.snp.right).offset(17)
             make.right.equalToSuperview().offset(-60)
         }

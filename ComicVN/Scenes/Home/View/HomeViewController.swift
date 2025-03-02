@@ -9,15 +9,8 @@ import UIKit
 import SnapKit
 import RxSwift
 import RxCocoa
-import QuartzCore
 
 class HomeViewController: BaseViewController, NavigationViewDelegate {
-    func didTapLeftButton(in view: UIView) {
-        let menuVC = MenuViewController()
-        menuVC.modalPresentationStyle = .overFullScreen
-        self.present(menuVC, animated: false, completion: nil)
-    }
-
     private var viewModel = DetailViewModel()
     
     var navigationView: UIView!
@@ -25,37 +18,36 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true, bounces: false)
     let contentView = UIView()
     
-    
     let trendingLabel = LabelFactory.createLabel(text: "Thịnh hành", font: .bold16, textColor: UIColor(hex: "#434040"))
     let newComicLabel = LabelFactory.createLabel(text: "Truyện mới cập nhật", font: .bold16, textColor: UIColor(hex: "#434040"))
     let categoryLabel = LabelFactory.createLabel(text: "DANH MỤC", font: .bold18, textColor: UIColor(hex: "#434040"))
     
     let moreOptionsImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     let moreOptionsnNewImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
-
-    let detailCollectionView = CollectionViewFactory.createCollectionView(left: 6, right: 16, width: 315, height: 165)
-    let trendingCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20, width: 80, height: 177)
-    let newComicCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20, width: 80, height: 177)
-    let categoryCollectionView = CollectionViewFactory.createCollectionView(estimated: false, left: 24)
-   
+    
+    let detailCollectionView = CollectionViewFactory.createCollectionView(left: 16, right: 16)
+    let trendingCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20)
+    let newComicCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20)
+    let categoryCollectionView = CollectionViewFactory.create2ColumCollectionView(minimumInteritemSpacing: 26, padding: 74, left: 24, right: 24, height: 84)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         bindViewModels()
     }
     
     override func setupUI() {
-        navigationView = NavigationViewFactory.createNavigationView(leftImage: UIImage(named: "menu"), title: "Trang chủ", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
+        navigationView = NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "Trang chủ", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
         
         view.addSubview(navigationView)
         navigationView.snp.makeConstraints{ make in
-            make.top.equalToSuperview().offset(44)
+            make.top.equalTo(view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview()
         }
         
         view.addSubview(scrollView)
         scrollView.delegate = self
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(navigationView.snp.bottom)
+            make.top.equalTo(navigationView.snp.bottom).offset(1)
             make.left.right.bottom.equalToSuperview()
         }
         
@@ -91,14 +83,14 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             make.top.equalTo(trendingCollectionView.snp.bottom).offset(30.5)
             make.right.equalToSuperview().offset(-15)
         }
-      
+        
         setupNewComicCollectionView()
         
         contentView.addSubview(categoryLabel)
         categoryLabel.snp.makeConstraints { make in
             make.top.equalTo(newComicCollectionView.snp.bottom).offset(34)
             make.left.equalToSuperview().offset(16)
-//            make.bottom.equalToSuperview()
+            //            make.bottom.equalToSuperview()
         }
         
         setupCategoryCollectionView()
@@ -122,8 +114,7 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         trendingCollectionView.snp.makeConstraints { make in
             make.top.equalTo(trendingLabel.snp.bottom).offset(5)
             make.left.right.equalToSuperview()
-            make.height.equalTo(250)
-//            make.bottom.equalToSuperview()
+            make.height.equalTo(200)
         }
         
         trendingCollectionView.register(TrendingCell.self, forCellWithReuseIdentifier: TrendingCell.identifier)
@@ -136,9 +127,8 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         newComicCollectionView.snp.makeConstraints { make in
             make.top.equalTo(newComicLabel.snp.bottom).offset(5)
             make.left.right.equalToSuperview()
-            make.height.equalTo(250)
-//            make.bottom.equalToSuperview()
-        }        
+            make.height.equalTo(200)
+        }
         newComicCollectionView.register(TrendingCell.self, forCellWithReuseIdentifier: TrendingCell.identifier)
         newComicCollectionView.dataSource = self
         newComicCollectionView.delegate = self
@@ -149,14 +139,14 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         categoryCollectionView.snp.makeConstraints { make in
             make.top.equalTo(categoryLabel.snp.bottom).offset(17)
             make.left.right.equalToSuperview()
-            make.height.equalTo(185)
+            make.height.greaterThanOrEqualTo(185)
             make.bottom.equalToSuperview().offset(-40)
         }
-        categoryCollectionView.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifier)
+        categoryCollectionView.register(ListCell.self, forCellWithReuseIdentifier: ListCell.identifier)
         categoryCollectionView.dataSource = self
         categoryCollectionView.delegate = self
     }
-
+    
     
     private func bindViewModels() {
         
@@ -174,7 +164,7 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             })
             .disposed(by: disposeBag)
         
-       
+        
         viewModel.itemsNewComic
             .subscribe(onNext: { [weak self] newItems in
                 guard let self = self else {return}
@@ -190,7 +180,12 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             .disposed(by: disposeBag)
     }
     
-    override func setupEvent() {
+    override func setupEvent() {}
+    
+    func didTapLeftButton(in view: UIView) {
+        let menuVC = MenuViewController()
+        menuVC.modalPresentationStyle = .overFullScreen
+        self.present(menuVC, animated: false, completion: nil)
     }
 }
 
@@ -202,7 +197,7 @@ extension HomeViewController: UICollectionViewDataSource {
         case trendingCollectionView:
             return viewModel.itemsTrending.value.count
         case newComicCollectionView:
-            return viewModel.itemsTrending.value.count
+            return viewModel.itemsNewComic.value.count
         default:
             return viewModel.itemsCategory.value.count
         }
@@ -232,7 +227,7 @@ extension HomeViewController: UICollectionViewDataSource {
             cell.configData(with: model)
             return cell
         default:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifier, for: indexPath) as? CategoryCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCell.identifier, for: indexPath) as? ListCell else {
                 return UICollectionViewCell()
             }
             let model =  viewModel.itemsCategory.value[indexPath.item]
@@ -243,15 +238,4 @@ extension HomeViewController: UICollectionViewDataSource {
 }
 
 extension HomeViewController: UICollectionViewDelegate {
-}
-
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if collectionView == categoryCollectionView {
-            let widthScreen = UIScreen.main.bounds.width
-            let width = (widthScreen - 74) / 2
-            return CGSize(width: width, height: 84)
-        }
-        return CGSize(width: 0, height: 0)
-    }
 }

@@ -9,12 +9,13 @@ import UIKit
 import Cosmos
 
 class CosmosViewFactory {
-    static func createCosmosView(starSize: CGFloat = 18, starMargin: CGFloat = 9, emptyImage: UIImage? = UIImage(named: "star_empty"), filledImage: UIImage? = UIImage(named: "star_filled"), emptyBorderColor: UIColor = .gray, filledBorderColor: UIColor = .yellow) -> CosmosView {
+    static func createCosmosView(starSize: CGFloat = 18, starMargin: CGFloat = 9, emptyImage: UIImage? = UIImage(named: "starEmpty"), filledImage: UIImage? = UIImage(named: "starFill"), emptyBorderColor: UIColor = .gray, filledBorderColor: UIColor = UIColor(hex: "#FFC107")) -> CosmosView {
         
         let cosmosView = CosmosView()
         
         cosmosView.settings.starSize = starSize
         cosmosView.settings.starMargin = starMargin
+        cosmosView.settings.updateOnTouch = false
         cosmosView.settings.fillMode = .full
         cosmosView.settings.emptyImage = emptyImage
         cosmosView.settings.filledImage = filledImage

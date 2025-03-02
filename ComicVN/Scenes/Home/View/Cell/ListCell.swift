@@ -7,8 +7,8 @@
 import UIKit
 import SnapKit
 
-class CategoryCell: UICollectionViewCell {
-    static let identifier = "CategoryCell"
+class ListCell: UICollectionViewCell {
+    static let identifier = "ListCell"
 
     var titleLabel = LabelFactory.createLabel(font: .bold18, textColor: .white, textAlignment: .center)
     var hastagLabel = LabelFactory.createLabel(font: .regular14, textColor: .white, textAlignment: .center)
@@ -25,10 +25,6 @@ class CategoryCell: UICollectionViewCell {
     }
     
     func setupUI() {
-//        image.image = UIImage(named: backgroundImage)
-//        image.contentMode = .scaleAspectFill
-//        contentView.insertSubview(image, at: 0)
-        
         contentView.addSubview(backgroundImage)
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -47,7 +43,7 @@ class CategoryCell: UICollectionViewCell {
         }
     }
     
-    func configData(with model: CategoryModel) {
+    func configData(with model: ListModel) {
         backgroundImage.image = model.image
         titleLabel.text = model.title
         hastagLabel.text = model.hastag

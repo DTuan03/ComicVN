@@ -12,6 +12,7 @@ import RxCocoa
 class MenuViewController: UIViewController {
     private let width = UIScreen.main.bounds.width
     private let height = UIScreen.main.bounds.height
+    let userID = UserDefaults.standard.string(forKey: "userId")
     
     private let viewModel = MenuViewModel()
     let disposeBag = DisposeBag()
@@ -43,7 +44,7 @@ class MenuViewController: UIViewController {
     private lazy var titleLabel = LabelFactory.createLabel(text: "followComics",
                                                            font: .medium12, textColor: .black,
                                                            textAlignment: .center)
-    lazy var nameUserLabel = LabelFactory.createLabel(font: .medium18,
+    lazy var nameUserLabel = LabelFactory.createLabel(text: viewModel.getUserName(userId: userID ?? ""),font: .medium18,
                                                       textColor: .black)
     lazy var crownImageView = ImageViewFactory.createImageView(image: .crown)
     private lazy var loginButton: UIButton = {

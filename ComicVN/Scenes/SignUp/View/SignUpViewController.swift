@@ -130,6 +130,7 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
     override func setupEvent() {
         signUpButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let self = self else { return }
+            let name = nameTextField.text
             let email = emailTextField.text
             let password = passTextField.text
             guard let email = email, !email.isEmpty,
@@ -140,11 +141,11 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
             
             if (viewModel.isValidEmail(email) && viewModel.isValidPassword(password)) {
                 viewModel.registerUser(email: emailTextField.text ?? "", password: passTextField.text ?? "")
-                
                 viewModel.isRegistered
                     .subscribe(onNext: { [weak self] success, error, userId in
                         guard let self = self else {return}
                         if success {
+                            viewModel.saveUser(userId: userId ?? "", email: email, name: name ?? "")
                             self.navigationController?.popViewController(animated: true)
                         } else {
                             UIAlertFactory.showAlert(on: self, message: "Đăng ký thất bại rồi! 😜😜😜")

@@ -12,7 +12,7 @@ import RxSwift
 class LoginViewController: BaseViewController {
     private let viewModel = LoginViewModel()
     
-// MARK: UI
+    // MARK: UI
     let imageView = ImageViewFactory.createImageView(image: UIImage(named: "avartar"),
                                                      contentMode: .scaleAspectFit)
     
@@ -71,7 +71,7 @@ class LoginViewController: BaseViewController {
     
     lazy var stackViewSignOther = [googleButton, faceBookButton, appleButton].vStack(12, distribution: .fillEqually)
     
-// MARK: SETUP UI
+    // MARK: SETUP UI
     override func setupUI() {
         view.addSubview(imageView)
         imageView.snp.makeConstraints { make in
@@ -114,14 +114,14 @@ class LoginViewController: BaseViewController {
             make.centerX.equalToSuperview()
         }
     }
-// MARK: SET up event
+    // MARK: SET up event
     override func setupEvent() {
         let signUpLabelTap = UITapGestureRecognizer(target: self, action: #selector(navigationToSignUp))
         signUpLabel.addGestureRecognizer(signUpLabelTap)
         loginButton.addTarget(self, action: #selector(signIn), for: .touchUpInside)
     }
     
-// MARK: Chuyen man hinh sang dang ky
+    // MARK: Chuyen man hinh sang dang ky
     @objc func navigationToSignUp() {
         let signUpVC = SignUpViewController()
         navigationController?.pushViewController(signUpVC, animated: true)

@@ -5,9 +5,9 @@
 //  Created by Tuấn on 27/2/25.
 //
 
-import Foundation
 import RxSwift
 import RxCocoa
+import RealmSwift
 
 struct MenuSection {
     var items: [MenuItem]
@@ -16,6 +16,7 @@ struct MenuSection {
 class MenuViewModel {
     static let shared = MenuViewModel()
     let itemsMenu = BehaviorRelay<[MenuSection]>(value: [])
+    let realm = try! Realm()
     
     var menuSections: [MenuSection] = [
         MenuSection(items: [
@@ -47,5 +48,11 @@ class MenuViewModel {
     
     func item(at indexPath: IndexPath) -> MenuItem {
         return menuSections[indexPath.section].items[indexPath.row]
+    }
+    
+    func getUserName(userId: String) -> String {
+        print(userId)
+        let user = realm.objects(User.self).filter("userId == %@", userId).first
+        return user?.name ?? "Người dùng"
     }
 }

@@ -7,6 +7,8 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class SettingViewController: BaseViewController {
     private let settingsSections = ["Dữ liệu", "Giao diện"]
@@ -17,7 +19,7 @@ class SettingViewController: BaseViewController {
     
     lazy var navigationView = {
         NavigationViewFactory.createMainNavigationView(leftImage: .menu,
-                                                       title: "setting",
+                                                       title: "settings",
                                                        delegate: self)
 
     }()
@@ -62,6 +64,16 @@ class SettingViewController: BaseViewController {
             make.width.equalTo(176)
             make.height.equalTo(48)
         }
+    }
+    
+    override func setupEvent() {
+        logoutBtn.rx.tap
+            .subscribe(onNext: {[weak self] in
+                guard let self = self else {return}
+                UserDefaults.standard.set("", forKey: "userId")
+                navigationController?.pushViewController(LoginViewController(), animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }
 

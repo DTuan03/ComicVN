@@ -6,6 +6,7 @@
 //
 
 import RxSwift
+import RealmSwift
 
 class SignUpViewModel {
     private let authManager = AuthManager.shared
@@ -29,5 +30,21 @@ class SignUpViewModel {
                 self?.isRegistered.onNext((success, errorMessage, userId))
             })
             .disposed(by: disposeBag)
+    }
+    
+    func saveUser(userId: String, email: String, name: String) {
+        let user = User()
+        user.userId = userId
+        user.email = email
+        user.name = name
+        
+        do {
+            let realm = try Realm()
+            try realm.write {
+                realm.add(user)
+            }
+        } catch {
+            print("Loi: \(error)")
+        }
     }
 }

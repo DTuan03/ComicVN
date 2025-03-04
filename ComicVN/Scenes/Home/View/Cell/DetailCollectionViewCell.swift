@@ -60,9 +60,9 @@ class DetailCollectionViewCell: UICollectionViewCell {
     
     func configData(with detail: DetailModel) {
         avatarImageView.image = detail.image
-        nameLabel.text = detail.name!
+        nameLabel.text = detail.name ?? ""
         cosmosView.rating = detail.rating ?? 0
-        authorLabel.text = "Tác giả: \(String(describing: detail.author!))"
+        authorLabel.text = "Tác giả: \(detail.author ?? "")"
         categoryLabel.text = "Thể loại: \(String(describing: detail.category!))"
         viewsLabel.text = "Lượt xem: \(String(describing: detail.views!))"
     }

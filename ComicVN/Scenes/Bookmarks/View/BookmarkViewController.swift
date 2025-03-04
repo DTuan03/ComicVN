@@ -10,9 +10,21 @@ import RxCocoa
 
 class BookmarkViewController: BaseViewController {
     var viewModel = BookmarkViewModel()
-    var navigationView = UIView()
-    let titleLabel = LabelFactory.createLabel(text: "Truyện đã lưu", font: UIFont.medium18, textColor: UIColor(hex: "#FF7B00"), textAlignment: .left)
-    let deleteButton = ButtonFactory.createButton("Xoá bookmarks", font: UIFont.medium14, textColor: .black, bgColor: UIColor(hex: "#C4C4C4"), rounded: false)
+    lazy var navigationView = {
+        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"),
+                                                       title: "bookmark",
+                                                       right1Image: UIImage(named: "add"),
+                                                       right2Image: UIImage(named: "search"),
+                                                       delegate: self)
+    }()
+    let titleLabel = LabelFactory.createLabel(text: "savedComics",
+                                              font: UIFont.medium18,
+                                              textColor: UIColor(hex: "#FF7B00"))
+    let deleteButton = ButtonFactory.createButton("deleteBookmark",
+                                                  font: UIFont.medium14,
+                                                  textColor: .black,
+                                                  bgColor: UIColor(hex: "#C4C4C4"),
+                                                  rounded: false)
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -26,7 +38,6 @@ class BookmarkViewController: BaseViewController {
     }()
     
     override func setupUI() {
-        navigationView = NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "Bookmark", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
         view.addSubviews([navigationView, titleLabel, deleteButton, tableView])
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)

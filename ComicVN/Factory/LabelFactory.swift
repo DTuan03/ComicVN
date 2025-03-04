@@ -8,9 +8,9 @@
 import UIKit
 
 class LabelFactory {
-    static func createLabel(text: String? = nil, font: UIFont = .medium14, textColor: UIColor = UIColor(hex: "#FF7B00"), textAlignment: NSTextAlignment = .center) -> UILabel {
+    static func createLabel(text: String? = nil, font: UIFont = .medium14, textColor: UIColor = UIColor(hex: "#FF7B00"), textAlignment: NSTextAlignment = .left) -> UILabel {
         let label = UILabel()
-        label.text = text
+        label.text = NSLocalizedString(text ?? "", comment: "")
         label.font = font
         label.textColor = textColor
         label.textAlignment = textAlignment

@@ -109,7 +109,7 @@ class NavigationViewFactory {
         button.imageView?.contentMode = .scaleAspectFit
         button.tintColor = UIColor(hex: "#FF7B00")
         if let titleButton = title {
-            button.setTitle(titleButton, for: .normal)
+            button.setTitle(NSLocalizedString(titleButton, comment: ""), for: .normal)
             button.setTitleColor(UIColor(hex: "#FF7B00"), for: .normal)
             button.titleLabel?.font = UIFont.bold18
             button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 18, bottom: 0, right: 0)

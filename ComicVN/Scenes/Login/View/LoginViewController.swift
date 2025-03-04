@@ -12,40 +12,73 @@ import RxSwift
 class LoginViewController: BaseViewController {
     private let viewModel = LoginViewModel()
     
-    let imageView = ImageViewFactory.createImageView(image: UIImage(named: "avartar"), contentMode: .scaleAspectFit)
-    let emailTextField = TextFieldFactory.createTextField(placeholder: "Email", font: .medium18, textAlignment: .left, rounded: true, height: 48)
-    let passTextField = TextFieldFactory.createTextField(placeholder: "Mật khẩu", font: .medium18, textAlignment: .left, rounded: true, height: 48)
-    let loginButton = ButtonFactory.createButton("Đăng nhập", rounded: true)
-    let forgotPassLabel = LabelFactory.createLabel(text: "Quên mật khẩu?", font: .regular16, textColor: UIColor(hex: "#FF7B00"), textAlignment: .center)
-    let orLoginLabel = LabelFactory.createLabel(text: "hoặc Đăng nhập bằng mạng xã hội", font: .regular16, textColor: UIColor(hex: "#434040"), textAlignment: .center)
-    let googleButton = ButtonFactory.createButton("Đăng nhập bằng Google", image: UIImage(named: "logoGG"), font: .medium16, textColor: .black, bgColor: UIColor(hex: "#F6F6F6"), rounded: true)
-    let appleButton = ButtonFactory.createButton("Đăng nhập bằng Apple", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#3B5998"), rounded: true)
-    let faceBookButton = ButtonFactory.createButton("Đăng nhập bằng Facebook", font: .medium16, textColor: .white, bgColor: UIColor(hex: "#000000"), rounded: true)
-    let signUpLabel = LabelFactory.createLabel(text: "Đăng ký", font: .bold18, textAlignment: .center)
+// MARK: UI
+    let imageView = ImageViewFactory.createImageView(image: UIImage(named: "avartar"),
+                                                     contentMode: .scaleAspectFit)
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        viewModel.isLoggedIn
-            .subscribe(onNext: { [weak self] success, errorMessage, userId in
-                if success {
-                    print("Đăng nhập thành công với userId: \(userId)")
-                    self?.navigationController?.pushViewController(HomeViewController(), animated: false)
-                } else {
-                    print("Lỗi đăng nhập: \(errorMessage ?? "")")
-                }
-            })
-            .disposed(by: disposeBag)
-    }
+    lazy var emailTextField: UITextField = {
+        let textField = TextFieldFactory.createTextField(placeholder: "email",
+                                                         font: .medium18,
+                                                         rounded: true, height: 48)
+        textField.imageLeftView(image: "", placeholder: "email")
+        return textField
+    }()
+    lazy var passTextField: UITextField = {
+        let textField = TextFieldFactory.createTextField(placeholder: "password",
+                                                         font: .medium18,
+                                                         rounded: true,
+                                                         height: 48)
+        textField.imageLeftView(image: "", placeholder: "passWord")
+        textField.imageRightView(image: "eyes", placeholder: "")
+        return textField
+    }()
+    
+    let loginButton = ButtonFactory.createButton("login",
+                                                 rounded: true)
+    let forgotPassLabel = LabelFactory.createLabel(text: "forgotPassword",
+                                                   font: .regular16,
+                                                   textColor: UIColor(hex: "#FF7B00"),
+                                                   textAlignment: .center)
+    let orLoginLabel = LabelFactory.createLabel(text: "orLoginWithSocialMedia",
+                                                font: .regular16,
+                                                textColor: UIColor(hex: "#434040"),
+                                                textAlignment: .center)
+    let googleButton: UIButton = {
+        let btn = ButtonFactory.createButton("googleLogin",
+                                             image: UIImage(named: "logoGG"),
+                                             font: .medium16,
+                                             textColor: .black,
+                                             bgColor: UIColor(hex: "#F6F6F6"),
+                                             rounded: true)
+        btn.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 21)
+        return btn
+    }()
+    let appleButton = ButtonFactory.createButton("appleLogin",
+                                                 font: .medium16,
+                                                 textColor: .white,
+                                                 bgColor: UIColor(hex: "#3B5998"),
+                                                 rounded: true)
+    let faceBookButton = ButtonFactory.createButton("facebookLogin",
+                                                    font: .medium16,
+                                                    textColor: .white,
+                                                    bgColor: UIColor(hex: "#000000"),
+                                                    rounded: true)
+    let signUpLabel = LabelFactory.createLabel(text: "signUp",
+                                               font: .bold18,
+                                               textAlignment: .center)
+    
+    lazy var stackViewTextField = [emailTextField, passTextField].vStack(14, alignment: .fill, distribution: .fill)
+    
+    lazy var stackViewSignOther = [googleButton, faceBookButton, appleButton].vStack(12, distribution: .fillEqually)
+    
+// MARK: SETUP UI
     override func setupUI() {
         view.addSubview(imageView)
         imageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(97)
             make.centerX.equalToSuperview()
         }
-        emailTextField.imageLeftView(image: "", placeholder: "email")
-        passTextField.imageLeftView(image: "", placeholder: "passWord")
-        passTextField.imageRightView(image: "eyes", placeholder: "")
-        let stackViewTextField = [emailTextField, passTextField].vStack(14, alignment: .fill, distribution: .fill)
+        
         view.addSubview(stackViewTextField)
         stackViewTextField.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(60.14)
@@ -67,9 +100,7 @@ class LoginViewController: BaseViewController {
             make.top.equalTo(forgotPassLabel.snp.bottom).offset(61)
             make.centerX.equalToSuperview()
         }
-        let stackViewSignOther = [googleButton, faceBookButton, appleButton].vStack(12, alignment: .fill, distribution: .fill)
-        googleButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 21)
-        stackViewSignOther.distribution = .fillEqually
+        
         view.addSubview(stackViewSignOther)
         stackViewSignOther.snp.makeConstraints { make in
             make.top.equalTo(orLoginLabel.snp.bottom).offset(35)
@@ -83,14 +114,14 @@ class LoginViewController: BaseViewController {
             make.centerX.equalToSuperview()
         }
     }
-    
+// MARK: SET up event
     override func setupEvent() {
         let signUpLabelTap = UITapGestureRecognizer(target: self, action: #selector(navigationToSignUp))
         signUpLabel.addGestureRecognizer(signUpLabelTap)
         loginButton.addTarget(self, action: #selector(signIn), for: .touchUpInside)
     }
     
-    //MARK: - Chuyen man hinh sang dang ky
+// MARK: Chuyen man hinh sang dang ky
     @objc func navigationToSignUp() {
         let signUpVC = SignUpViewController()
         navigationController?.pushViewController(signUpVC, animated: true)
@@ -104,5 +135,17 @@ class LoginViewController: BaseViewController {
             return
         }
         viewModel.loginUser(email: emailTextField.text ?? "", password: passTextField.text ?? "")
+        
+        viewModel.isLoggedIn
+            .subscribe(onNext: { [weak self] success, error, userId in
+                guard let self = self else {return}
+                if success {
+                    UserDefaults.standard.set(userId, forKey: "userId")
+                    navigationController?.pushViewController(HomeViewController(), animated: true)
+                } else {
+                    UIAlertFactory.showAlert(on: self, message: "Đăng nhập thất bại rồi! 😜😜😜")
+                }
+            })
+            .disposed(by: disposeBag)
     }
 }

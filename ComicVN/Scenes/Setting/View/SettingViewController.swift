@@ -15,7 +15,12 @@ class SettingViewController: BaseViewController {
         ["Chế độ tối"]
     ]
     
-    private var navigationView = UIView()
+    lazy var navigationView = {
+        NavigationViewFactory.createMainNavigationView(leftImage: .menu,
+                                                       title: "setting",
+                                                       delegate: self)
+
+    }()
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -33,14 +38,8 @@ class SettingViewController: BaseViewController {
         button.semanticContentAttribute = .forceRightToLeft
         return button
     }()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-    }
     
     override func setupUI() {
-        navigationView = NavigationViewFactory.createMainNavigationView(leftImage: .menu, title: "Cài đặt", delegate: self)
         view.addSubviews([navigationView, tableView, logoutBtn])
         
         navigationView.snp.makeConstraints { make in

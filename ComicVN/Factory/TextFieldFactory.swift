@@ -8,10 +8,10 @@
 import UIKit
 
 class TextFieldFactory {
-    static func createTextField(placeholder: String?, font: UIFont = .bold18, bgColor: UIColor = UIColor(hex: "#DCDBDB", alpha: 0.8), textColor: UIColor = UIColor(hex: "#434040"), textAlignment: NSTextAlignment = .center, rounded: Bool, height: CGFloat?) -> UITextField {
+    static func createTextField(placeholder: String?, font: UIFont = .bold18, bgColor: UIColor = UIColor(hex: "#DCDBDB", alpha: 0.8), textColor: UIColor = UIColor(hex: "#434040"), textAlignment: NSTextAlignment = .left, rounded: Bool, height: CGFloat?) -> UITextField {
         let textField = UITextField()
         textField.autocapitalizationType = .none
-        textField.placeholder = placeholder
+        textField.placeholder = NSLocalizedString(placeholder ?? "", comment: "")
         textField.font = font
         textField.backgroundColor = bgColor
         textField.textColor = textColor

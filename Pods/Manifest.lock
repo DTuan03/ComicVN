@@ -81,6 +81,11 @@ PODS:
     - IQKeyboardCore
   - IQTextView (1.0.5):
     - IQKeyboardToolbar/Placeholderable
+  - Realm (20.0.1):
+    - Realm/Headers (= 20.0.1)
+  - Realm/Headers (20.0.1)
+  - RealmSwift (20.0.1):
+    - Realm (= 20.0.1)
   - RecaptchaInterop (100.0.0)
   - RxCocoa (6.9.0):
     - RxRelay (= 6.9.0)
@@ -94,6 +99,7 @@ DEPENDENCIES:
   - Cosmos
   - FirebaseAuth
   - IQKeyboardManagerSwift
+  - RealmSwift
   - RxCocoa
   - RxSwift
   - SnapKit
@@ -117,6 +123,8 @@ SPEC REPOS:
     - IQKeyboardToolbarManager
     - IQTextInputViewNotification
     - IQTextView
+    - Realm
+    - RealmSwift
     - RecaptchaInterop
     - RxCocoa
     - RxRelay
@@ -141,12 +149,14 @@ SPEC CHECKSUMS:
   IQKeyboardToolbarManager: 6c693c8478d6327a7ef2107528d29698b3514dbb
   IQTextInputViewNotification: f5e954d8881fd9808b744e49e024cc0d4bcfe572
   IQTextView: ae13b4922f22e6f027f62c557d9f4f236b19d5c7
+  Realm: 9572204903ef28caeb3c03bb30c1147f354ee3e7
+  RealmSwift: d230b44017a55a1ba97de6a944da1fe3bedb92b5
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RxCocoa: ac16414696ae706516be3e1ab00fcce5bdc9be8a
   RxRelay: 6b0c930e5cef57d5fe2032571e5e65b78e3cbdb1
   RxSwift: 31649ace6aceeb422e16ff71c60804f9c3281ed9
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
 
-PODFILE CHECKSUM: 182f5028379d61382e36d63a218167a8e97e8b20
+PODFILE CHECKSUM: 7faf151c160a7a18d8d61aeb735847082d3f9f55
 
 COCOAPODS: 1.16.2

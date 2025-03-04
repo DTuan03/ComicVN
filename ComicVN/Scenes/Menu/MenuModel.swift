@@ -9,7 +9,6 @@ struct MenuItem {
     let title: String
     let iconName: String
     let action: MenuAction
-    var isSelected: Bool
 }
 
 enum MenuAction {

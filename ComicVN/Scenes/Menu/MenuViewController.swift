@@ -17,13 +17,37 @@ class MenuViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     // MARK: - UI
+    lazy var gradientView: UIView = {
+        let gradientView = UIView(frame: CGRect(x: 0, y: 0, width: width * 0.77, height: height))
+        gradientView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.frame = gradientView.bounds
+        gradientLayer.colors = [UIColor(hex: "#2EE2A1").cgColor, UIColor(hex: "#FFFFFF").cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
+        gradientLayer.endPoint = CGPoint(x: 0.25, y: 0.5)
+        
+        gradientView.layer.insertSublayer(gradientLayer, at: 0)
+        return gradientView
+    }()
+    
+    lazy var closeView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(hex: "#C4C4C4", alpha: 0.6)
+        
+        return view
+    }()
+    
     private lazy var avatarImage = ImageViewFactory.createImageView(image: UIImage(named: "avartarUser"),
                                                                     radius: 35)
-    private lazy var titleLabel = LabelFactory.createLabel(text: "Để theo dõi nhiều truyện hay !",
+    private lazy var titleLabel = LabelFactory.createLabel(text: "followComics",
                                                            font: .medium12, textColor: .black,
                                                            textAlignment: .center)
+    lazy var nameUserLabel = LabelFactory.createLabel(font: .medium18,
+                                                      textColor: .black)
+    lazy var crownImageView = ImageViewFactory.createImageView(image: .crown)
     private lazy var loginButton: UIButton = {
-        let button = ButtonFactory.createButton("Đăng nhập ngay",
+        let button = ButtonFactory.createButton("signInNow",
                                                 image: UIImage(named: "arrowRight"),
                                                 locationImageRight: true,
                                                 font: .medium12, textColor: .white,
@@ -39,11 +63,15 @@ class MenuViewController: UIViewController {
     
     private lazy var readIcon = ImageViewFactory.createImageView(image: UIImage(named: "smart"))
     private lazy var savedIcon = ImageViewFactory.createImageView(image: UIImage(named: "reading"))
-    private lazy var readLabel = LabelFactory.createLabel(text: "10", font: .regular16, textColor: .black)
-    private lazy var savedLabel = LabelFactory.createLabel(text: "102", font: .regular16, textColor: .black)
+    private lazy var readLabel = LabelFactory.createLabel(text: "10",
+                                                          font: .regular16,
+                                                          textColor: .black)
+    private lazy var savedLabel = LabelFactory.createLabel(text: "102",
+                                                           font: .regular16,
+                                                           textColor: .black)
     
     private lazy var readButton: UIButton = {
-        let button = ButtonFactory.createButton("Đã đọc",
+        let button = ButtonFactory.createButton("read",
                                                 image: UIImage(named: "smart"),
                                                 font: .medium14, textColor: UIColor(hex: "#DE4C3F"),
                                                 bgColor: UIColor(hex: "#FF9C8C", alpha: 0.29),
@@ -54,7 +82,7 @@ class MenuViewController: UIViewController {
     }()
     
     private lazy var savedButton: UIButton = {
-        let button = ButtonFactory.createButton("Truyện Lưu",
+        let button = ButtonFactory.createButton("savedComics",
                                                 image: UIImage(named: "reading"),
                                                 font: .medium14, textColor: UIColor(hex: "#0B1329"),
                                                 bgColor: UIColor(hex: "#321910", alpha: 0.3),
@@ -64,7 +92,15 @@ class MenuViewController: UIViewController {
         return button
     }()
     
-    private lazy var containerView = createContainerView()
+    lazy var containerView: UIView = {
+        let containerView = UIView()
+        containerView.backgroundColor = .white
+        containerView.layer.cornerRadius = 6
+        containerView.layer.shadowOffset = CGSize(width: 0, height: 5)
+        containerView.layer.shadowColor = UIColor(hex: "#455154", alpha: 0.9).cgColor
+        containerView.layer.shadowOpacity = 0.1
+        return containerView
+    }()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -75,6 +111,8 @@ class MenuViewController: UIViewController {
         return tableView
     }()
     
+    lazy var stackView = [readView, savedView].hStack(0, distribution: .fillEqually)
+
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,14 +123,19 @@ class MenuViewController: UIViewController {
     
     // MARK: - Setup UI
     private func setupUI() {
-        view.backgroundColor = UIColor(hex: "#C4C4C4", alpha: 0.6)
-        let gradientView = createGradientView()
-        view.addSubview(gradientView)
-            
-        let stackView = [readView, savedView].hStack(0, distribution: .fillEqually)
+        view.addSubviews([gradientView, closeView])
+        gradientView.snp.makeConstraints { make in
+            make.top.bottom.left.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.77)
+        }
+
+        closeView.snp.makeConstraints { make in
+            make.top.bottom.right.equalToSuperview()
+            make.left.equalTo(gradientView.snp.right)
+        }
         
         gradientView.addSubviews([vInfo, containerView, tableView])
-        vInfo.addSubviews([avatarImage, titleLabel, loginButton])
+        vInfo.addSubviews([avatarImage, titleLabel, loginButton, nameUserLabel, crownImageView])
         containerView.addSubview(stackView)
         
         setupConstraints(stackView: stackView, containerView: containerView)
@@ -102,30 +145,6 @@ class MenuViewController: UIViewController {
         setupTableView()
     }
     
-    private func createGradientView() -> UIView {
-        let gradientView = UIView(frame: CGRect(x: 0, y: 0, width: width * 0.77, height: height))
-        gradientView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = gradientView.bounds
-        gradientLayer.colors = [UIColor(hex: "#2EE2A1").cgColor, UIColor(hex: "#FFFFFF").cgColor]
-        gradientLayer.startPoint = CGPoint(x: 0, y: 0)
-        gradientLayer.endPoint = CGPoint(x: 0.25, y: 0.5)
-        
-        gradientView.layer.insertSublayer(gradientLayer, at: 0)
-        return gradientView
-    }
-    
-    private func createContainerView() -> UIView {
-        let containerView = UIView()
-        containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 6
-        containerView.layer.shadowOffset = CGSize(width: 0, height: 5)
-        containerView.layer.shadowColor = UIColor(hex: "#455154", alpha: 0.9).cgColor
-        containerView.layer.shadowOpacity = 0.1
-        return containerView
-    }
-    
     private func setupConstraints(stackView: UIStackView, containerView: UIView) {
         vInfo.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(50)
@@ -133,7 +152,7 @@ class MenuViewController: UIViewController {
             make.right.equalToSuperview().offset(31)
             make.height.equalTo(70)
         }
-        
+                
         stackView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -159,6 +178,17 @@ class MenuViewController: UIViewController {
             make.left.equalTo(avatarImage.snp.right).offset(12)
             make.width.equalTo(147)
             make.height.equalTo(30)
+        }
+        titleLabel.isHidden = true
+        loginButton.isHidden = true
+        nameUserLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(22)
+            make.left.equalTo(avatarImage.snp.right).offset(11)
+//            make.height.equalTo(34)
+        }
+        crownImageView.snp.makeConstraints { make in
+            make.bottom.equalTo(nameUserLabel.snp.top)
+            make.left.equalTo(nameUserLabel.snp.right).offset(-16)
         }
     }
     
@@ -202,16 +232,19 @@ class MenuViewController: UIViewController {
             make.left.right.equalToSuperview().inset(22)
             make.bottom.equalToSuperview()
         }
-        
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 34
+        tableView.rowHeight = 40
     }
     
     private func setupEvent() {
         let swipe = UISwipeGestureRecognizer(target: self, action: #selector(dismis))
         swipe.direction = .left
         self.view.addGestureRecognizer(swipe)
+        
+        let closeTap = UITapGestureRecognizer(target: self, action: #selector(dismis))
+//        swipe.direction = .left
+        self.closeView.addGestureRecognizer(closeTap)
         
         let loginBtnTap = UITapGestureRecognizer(target: self, action: #selector(showLoginScrenn))
         loginButton.addGestureRecognizer(loginBtnTap)
@@ -257,6 +290,12 @@ extension MenuViewController: UITableViewDataSource {
         cell.backgroundColor = .clear
         let menuItem = viewModel.item(at: indexPath)
         cell.configData(with: menuItem)
+        if indexPath.section == UserDefaults.standard.value(forKey: "selectedSectionMenu") as? Int ?? 0 {
+            if indexPath.row == UserDefaults.standard.value(forKey: "selectedRowMenu") as? Int ?? 0 {
+                cell.containerView.backgroundColor = UIColor(hex: "#72B261", alpha: 0.2)
+            }
+        }
+
         return cell
     }
     
@@ -289,11 +328,12 @@ extension MenuViewController: UITableViewDataSource {
 extension MenuViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        viewModel.selectItem(at: indexPath)
-//        print(viewModel.menuSections)
+//        viewModel.selectItem(at: indexPath)
+        //        print(viewModel.menuSections)
         let selectedAction = viewModel.item(at: indexPath).action
+        UserDefaults.standard.set(indexPath.section, forKey: "selectedSectionMenu")
+        UserDefaults.standard.set(indexPath.row, forKey: "selectedRowMenu")
         handleMenuSelection(for: selectedAction)
-        
     }
     
     private func handleMenuSelection(for action: MenuAction) {

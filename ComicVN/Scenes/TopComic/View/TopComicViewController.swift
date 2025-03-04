@@ -10,35 +10,51 @@ import RxSwift
 import RxCocoa
 
 class TopComicViewController: BaseViewController {
-    let viewModel = TopComicViewModel()
+    lazy var viewModel = TopComicViewModel()
     
-    var navigationView = UIView()
+    lazy var navigationView = {
+        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "topComics", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
+        
+    }()
     
-    let attributeSelected: [NSAttributedString.Key: Any] = [
+    lazy var attributeSelected: [NSAttributedString.Key: Any] = [
         .foregroundColor: UIColor(hex: "#FF7B00"),
         .font: UIFont.semiBold18
     ]
     
-    let attributeNormal: [NSAttributedString.Key: Any] = [
+    lazy var attributeNormal: [NSAttributedString.Key: Any] = [
         .foregroundColor: UIColor.black,
         .font: UIFont.medium18
     ]
     
     
-    let segmentedControl: UISegmentedControl = {
+    lazy var segmentedControl: UISegmentedControl = {
         let items = ["Top tuần", "Top tháng", "Top đánh giá"]
         let control = UISegmentedControl(items: items)
         control.selectedSegmentIndex = 0
-        //        control.addTarget(self, action: #selector(segmentChanged(_:)), for: .valueChanged)
         let clearImage = UIImage()
         control.setBackgroundImage(clearImage, for: .normal, barMetrics: .default)
         control.setDividerImage(clearImage, forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
         return control
     }()
     
-    let weakBottomLine = UIView()
-    let monthBottomLine = UIView()
-    let reviewBottomLine = UIView()
+    lazy var weakBottomLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(hex: "#FF7B00")
+        return view
+    }()
+    
+    lazy var monthBottomLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        return view
+    }()
+    
+    lazy var reviewBottomLine: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        return view
+    }()
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -47,16 +63,12 @@ class TopComicViewController: BaseViewController {
         tableView.backgroundColor = .white
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
+        tableView.delegate = self
+        tableView.dataSource = self
         return tableView
     }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
-    
+
     override func setupUI() {
-        navigationView = NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "Top truyện", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
         view.addSubviews([navigationView, segmentedControl, weakBottomLine, monthBottomLine, reviewBottomLine, tableView])
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -69,21 +81,18 @@ class TopComicViewController: BaseViewController {
             make.left.right.equalToSuperview()
             make.height.equalTo(47)
         }
-        weakBottomLine.backgroundColor = UIColor(hex: "#FF7B00")
         weakBottomLine.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom)
             make.left.equalToSuperview()
             make.height.equalTo(1)
             make.width.equalToSuperview().multipliedBy(0.34)
         }
-        monthBottomLine.backgroundColor = .black
         monthBottomLine.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom)
             make.left.equalTo(weakBottomLine.snp.right)
             make.height.equalTo(1)
             make.width.equalToSuperview().multipliedBy(0.33)
         }
-        reviewBottomLine.backgroundColor = .black
         reviewBottomLine.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom)
             make.left.equalTo(monthBottomLine.snp.right)
@@ -96,12 +105,9 @@ class TopComicViewController: BaseViewController {
             make.left.right.equalToSuperview().inset(39)
             make.bottom.equalToSuperview()
         }
-        tableView.delegate = self
-        tableView.dataSource = self
     }
     
     override func setupEvent() {
-        //        segmentedControl.addTarget(self, action: #selector(segmentChanged(_ :)), for: .valueChanged)
         segmentedControl.rx.selectedSegmentIndex
             .bind(to: viewModel.selectedSegment)
             .disposed(by: disposeBag)

@@ -12,7 +12,9 @@ import RxCocoa
 
 class DetailCategoryViewController: BaseViewController {
     let viewModel = InfoComicViewModel()
-    var navigationView: UIView!
+    lazy var navigationView = {
+        NavigationViewFactory.createSecondNavigationView(leftImage: UIImage.arrowLeft, titleButton: "Siêu Anh Hùng", delegate: self)
+    }()
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
         tableView.register(InfoComicCell.self, forCellReuseIdentifier: InfoComicCell.identifier)
@@ -20,15 +22,12 @@ class DetailCategoryViewController: BaseViewController {
         tableView.backgroundColor = .white
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: 38, left: 0, bottom: 0, right: 0)
+        tableView.delegate = self
+        tableView.dataSource = self
         return tableView
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
     override func setupUI() {
-        navigationView = NavigationViewFactory.createSecondNavigationView(leftImage: UIImage.arrowLeft, titleButton: "Siêu Anh Hùng", delegate: self)
         view.addSubviews([navigationView, tableView])
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -40,8 +39,6 @@ class DetailCategoryViewController: BaseViewController {
             make.left.right.equalToSuperview().inset(39)
             make.bottom.equalToSuperview()
         }
-        tableView.delegate = self
-        tableView.dataSource = self
     }
     
     override func bindState() {

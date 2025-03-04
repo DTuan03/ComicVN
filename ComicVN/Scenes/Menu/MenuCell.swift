@@ -13,7 +13,7 @@ class MenuCell: UITableViewCell {
     
     private let iconImageView = ImageViewFactory.createImageView(tintColor: .black)
     private let titleLabel = LabelFactory.createLabel(font: .medium18, textColor: .black)
-    private let containerView: UIView = {
+    let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
@@ -50,7 +50,7 @@ class MenuCell: UITableViewCell {
     func configData(with menuItem: MenuItem) {
         titleLabel.text = menuItem.title
         iconImageView.image = UIImage(systemName: menuItem.iconName)
-        containerView.backgroundColor = menuItem.isSelected ? UIColor(hex: "#72B261", alpha: 0.2) : .clear
+//        containerView.backgroundColor = menuItem.isSelected ? UIColor(hex: "#72B261", alpha: 0.2) : .clear
         containerView.layer.cornerRadius = 8
     }
 }

@@ -20,8 +20,6 @@ class BaseViewController: UIViewController {
         setupUI()
         setupEvent()
         bindState()
-        
-        
     }
     
     func setupUI() {

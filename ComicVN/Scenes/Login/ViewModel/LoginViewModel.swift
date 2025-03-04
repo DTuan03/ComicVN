@@ -8,7 +8,7 @@
 import RxSwift
 
 class LoginViewModel {
-    private let loginManager = LoginManger.shared
+    private let loginManager = AuthManager.shared
     private let disposeBag = DisposeBag()
     
     var isLoggedIn = PublishSubject<(Bool, String?, String)>()

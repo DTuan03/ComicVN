@@ -11,13 +11,15 @@ import RxSwift
 import RxCocoa
 
 class CategoryViewController: BaseViewController {
-    var navigationView: UIView!
+    lazy var navigationView = {
+        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "topic", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
+
+    }()
     lazy var categoryCV = CollectionViewFactory.create2ColumCollectionView(scrollDirection: .horizontal, minimumInteritemSpacing: 31, padding: 51, left: 10, right: 10, height: 55)
     
     private let viewModel = CategoryViewModel()
     
     override func setupUI() {
-        navigationView = NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "Thể loại", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
         view.addSubviews([navigationView, categoryCV])
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)

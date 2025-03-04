@@ -10,8 +10,18 @@ import RxCocoa
 
 class RankingViewController: BaseViewController {
     var viewModel = RankingViewModel()
-    var navigationView = UIView()
-    let titleLabel = LabelFactory.createLabel(text: "Truyện được đọc nhiều nhất trong \n tháng", font: UIFont.medium18, textColor: UIColor(hex: "#FF7B00"), textAlignment: .left)
+    
+    lazy var navigationView = {
+        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"),
+                                                       title: "ranking",
+                                                       right1Image: UIImage(named: "add"),
+                                                       right2Image: UIImage(named: "search"),
+                                                       delegate: self)
+    }()
+    
+    let titleLabel = LabelFactory.createLabel(text: "mostReadComics",
+                                              font: UIFont.medium18,
+                                              textColor: UIColor(hex: "#FF7B00"))
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -21,16 +31,13 @@ class RankingViewController: BaseViewController {
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+        tableView.delegate = self
+        tableView.dataSource = self
+        
         return tableView
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-    }
-    
     override func setupUI() {
-        navigationView = NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "Xếp hạng", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
         view.addSubviews([navigationView, titleLabel, tableView])
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -49,9 +56,6 @@ class RankingViewController: BaseViewController {
             make.right.equalToSuperview().inset(26)
             make.bottom.equalToSuperview()
         }
-        
-        tableView.delegate = self
-        tableView.dataSource = self
     }
 
     override func bindState() {

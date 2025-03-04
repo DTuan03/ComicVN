@@ -13,31 +13,40 @@ import RxCocoa
 class HomeViewController: BaseViewController, NavigationViewDelegate {
     private var viewModel = DetailViewModel()
     
-    var navigationView: UIView!
+    lazy var navigationView = {
+        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "home", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
+    }()
     
-    let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true, bounces: false)
+    let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true,
+                                                        bounces: false)
     let contentView = UIView()
     
-    let trendingLabel = LabelFactory.createLabel(text: "Thịnh hành", font: .bold16, textColor: UIColor(hex: "#434040"))
-    let newComicLabel = LabelFactory.createLabel(text: "Truyện mới cập nhật", font: .bold16, textColor: UIColor(hex: "#434040"))
-    let categoryLabel = LabelFactory.createLabel(text: "DANH MỤC", font: .bold18, textColor: UIColor(hex: "#434040"))
+    let trendingLabel = LabelFactory.createLabel(text: "trending",
+                                                 font: .bold16,
+                                                 textColor: UIColor(hex: "#434040"))
+    let newComicLabel = LabelFactory.createLabel(text: "newComics",
+                                                 font: .bold16,
+                                                 textColor: UIColor(hex: "#434040"))
+    let categoryLabel = LabelFactory.createLabel(text: "category",
+                                                 font: .bold18,
+                                                 textColor: UIColor(hex: "#434040"))
     
     let moreOptionsImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     let moreOptionsnNewImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     
-    let detailCollectionView = CollectionViewFactory.createCollectionView(left: 16, right: 16)
-    let trendingCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20)
-    let newComicCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8, left: 20)
-    let categoryCollectionView = CollectionViewFactory.create2ColumCollectionView(minimumInteritemSpacing: 26, padding: 74, left: 24, right: 24, height: 84)
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        bindViewModels()
-    }
-    
+    let detailCollectionView = CollectionViewFactory.createCollectionView(left: 16,
+                                                                          right: 16)
+    let trendingCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8,
+                                                                            left: 20)
+    let newComicCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8,
+                                                                            left: 20)
+    let categoryCollectionView = CollectionViewFactory.create2ColumCollectionView(minimumInteritemSpacing: 26,
+                                                                                  padding: 74,
+                                                                                  left: 24,
+                                                                                  right: 24,
+                                                                                  height: 84)
+  
     override func setupUI() {
-        navigationView = NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "Trang chủ", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
-        
         view.addSubview(navigationView)
         navigationView.snp.makeConstraints{ make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -147,8 +156,7 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         categoryCollectionView.delegate = self
     }
     
-    
-    private func bindViewModels() {
+    override func bindState() {
         
         viewModel.itemsDetail
             .subscribe(onNext: { [weak self] newItems in

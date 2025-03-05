@@ -19,7 +19,7 @@ class InfoComicCell: UITableViewCell {
         return view
     }()
     
-    lazy var avartaImageView = ImageViewFactory.createImageView()
+    lazy var avartaImageView = ImageViewFactory.createImageView(contentMode: .scaleAspectFill)
     lazy var nameLabel = LabelFactory.createLabel(font: .medium14, textColor: .black, textAlignment: .left)
     lazy var cosmos = CosmosViewFactory.createCosmosView()
     lazy var authorLabel = LabelFactory.createLabel(font: .regular12, textColor: .black, textAlignment: .left)
@@ -110,9 +110,9 @@ class InfoComicCell: UITableViewCell {
     func configData(with model: InfoComicModel) {
         avartaImageView.image = model.avatar
         nameLabel.text = model.name
-        cosmos.rating = model.rating
-        authorLabel.text = "Tác giả: \(model.author)"
-        categoryLabel.text = "Thể loại: \(model.category)"
-        viewsLabel.text = "  Lượt xem: \(model.views)      "
+        cosmos.rating = model.rating ?? 0
+        authorLabel.text = "Tác giả: \(model.author ?? "Đang cập nhật")"
+        categoryLabel.text = "Thể loại: \(model.category ?? "Đang cập nhật")"
+        viewsLabel.text = "  Lượt xem: \(model.views ?? "Đang cập nhật")   "
     }
 }

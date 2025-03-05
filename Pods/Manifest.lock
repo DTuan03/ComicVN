@@ -1,5 +1,6 @@
 PODS:
   - Cosmos (25.0.1)
+  - DropDown (2.3.13)
   - FirebaseAppCheckInterop (11.8.0)
   - FirebaseAuth (11.8.1):
     - FirebaseAppCheckInterop (~> 11.0)
@@ -97,6 +98,7 @@ PODS:
 
 DEPENDENCIES:
   - Cosmos
+  - DropDown
   - FirebaseAuth
   - IQKeyboardManagerSwift
   - RealmSwift
@@ -107,6 +109,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Cosmos
+    - DropDown
     - FirebaseAppCheckInterop
     - FirebaseAuth
     - FirebaseAuthInterop
@@ -133,6 +136,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Cosmos: 02db0a1c953107049bfd2d7af19ceef55ecb7e98
+  DropDown: 8a2116376c1981888557f72ec2ffc9a5e0e456ec
   FirebaseAppCheckInterop: 7bf86d55a2b7e9bd91464120eba3e52e4b63b2e2
   FirebaseAuth: ad59a1a7b161e75f74c39f70179d2482d40e2737
   FirebaseAuthInterop: 651756e70d9a0b9160db39ead71fd5507dbb6c84
@@ -157,6 +161,6 @@ SPEC CHECKSUMS:
   RxSwift: 31649ace6aceeb422e16ff71c60804f9c3281ed9
   SnapKit: d612e99e678a2d3b95bf60b0705ed0a35c03484a
 
-PODFILE CHECKSUM: 7faf151c160a7a18d8d61aeb735847082d3f9f55
+PODFILE CHECKSUM: 77050f97269f30967c1a2db8ffa1326273de6a98
 
 COCOAPODS: 1.16.2

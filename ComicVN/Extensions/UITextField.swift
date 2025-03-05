@@ -7,7 +7,7 @@
 import UIKit
 
 extension UITextField {
-    func imageLeftView(image: String, placeholder: String) {
+    func imageLeftView(image: String, placeholder: String = "") {
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
         let imageView = UIImageView(image: UIImage(systemName: image))
         imageView.tintColor = .black

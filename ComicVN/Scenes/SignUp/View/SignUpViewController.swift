@@ -15,33 +15,57 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
         navigationController?.popViewController(animated: true)
     }
     
+    func didTapRightAddButton(in view: UIView) {
+        let addVC = AddViewController()
+        navigationController?.pushViewController(addVC, animated: true)
+    }
+    
     private let viewModel = SignUpViewModel()
     lazy var navigationView = {
-         NavigationViewFactory.createSecondNavigationView(leftImage: .arrowLeft, titleButton: "back", delegate: self)
+         NavigationViewFactory.createSecondNavigationView(leftImage: .arrowLeft,
+                                                          titleButton: "back",
+                                                          delegate: self)
     }()
-    lazy var scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true, bounces: false)
+    lazy var scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true,
+                                                             bounces: false)
     lazy var contentView = UIView()
-    lazy var logoImageView = ImageViewFactory.createImageView(image: UIImage(named: "avartar"), contentMode: .scaleAspectFit)
+    lazy var logoImageView = ImageViewFactory.createImageView(image: UIImage(named: "avartar"),
+                                                              contentMode: .scaleAspectFit)
     lazy var nameTextField: UITextField = {
-        let textField = TextFieldFactory.createTextField(placeholder: "name", font: .medium18, textAlignment: .left, rounded: true, height: 48)
+        let textField = TextFieldFactory.createTextField(placeholder: "name",
+                                                         font: .medium18,
+                                                         textAlignment: .left,
+                                                         rounded: true,
+                                                         height: 48)
         textField.imageLeftView(image: "", placeholder: "email")
         return textField
     }()
 
     lazy var emailTextField: UITextField = {
-        let textField = TextFieldFactory.createTextField(placeholder: "email", font: .medium18, textAlignment: .left, rounded: true, height: 48)
+        let textField = TextFieldFactory.createTextField(placeholder: "email",
+                                                         font: .medium18,
+                                                         rounded: true,
+                                                         height: 48)
         textField.imageLeftView(image: "", placeholder: "email")
         return textField
     }()
     lazy var passTextField: UITextField = {
-       let textField = TextFieldFactory.createTextField(placeholder: "password", font: .medium18, textAlignment: .left, rounded: true, height: 48)
+       let textField = TextFieldFactory.createTextField(placeholder: "password",
+                                                        font: .medium18,
+                                                        textAlignment: .left,
+                                                        rounded: true,
+                                                        height: 48)
         textField.imageLeftView(image: "", placeholder: "passWord")
         textField.imageRightView(image: "eyes", placeholder: "")
         return textField
     }()
-    lazy var signUpButton = ButtonFactory.createButton("signUp", rounded: true)
+    lazy var signUpButton = ButtonFactory.createButton("signUp",
+                                                       rounded: true)
     lazy var acceptTermsLabel: UILabel = {
-        let label = LabelFactory.createLabel(text: "acceptTerms", font: .regular14, textColor: UIColor(hex: "#434040"), textAlignment: .center)
+        let label = LabelFactory.createLabel(text: "acceptTerms",
+                                             font: .regular14,
+                                             textColor: UIColor(hex: "#434040"),
+                                             textAlignment: .center)
         label.highlightText(
             fullText: NSLocalizedString("acceptTerms", comment: ""),
             highlightTexts: [NSLocalizedString("termsHighLine", comment: ""), NSLocalizedString("conditionsHighLine", comment: "")],
@@ -49,7 +73,10 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
         )
         return label
     }()
-    lazy var orLoginLabel = LabelFactory.createLabel(text: "orLoginWithSocialMedia", font: .regular16, textColor: UIColor(hex: "#434040"), textAlignment: .center)
+    lazy var orLoginLabel = LabelFactory.createLabel(text: "orLoginWithSocialMedia",
+                                                     font: .regular16,
+                                                     textColor: UIColor(hex: "#434040"),
+                                                     textAlignment: .center)
     lazy var googleButton = {
         let btn =  ButtonFactory.createButton("googleLogin", image: UIImage(named: "logoGG"), font: .medium16, textColor: .black, bgColor: UIColor(hex: "#F6F6F6"), rounded: true)
         btn.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 21)
@@ -73,17 +100,16 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(navigationView.snp.bottom).offset(1)
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.left.right.bottom.equalToSuperview()
         }
         
         scrollView.addSubview(contentView)
         contentView.snp.makeConstraints { make in
-            make.top.equalTo(scrollView.snp.top)
-            make.left.equalTo(scrollView.snp.left)
-            make.right.equalTo(scrollView.snp.right)
-            make.bottom.equalTo(scrollView.snp.bottom)
+            make.edges.equalTo(scrollView)
+//            make.top.equalTo(scrollView.snp.top)
+//            make.left.equalTo(scrollView.snp.left)
+//            make.right.equalTo(scrollView.snp.right)
+//            make.bottom.equalTo(scrollView.snp.bottom)
             make.width.equalTo(scrollView.snp.width)
         }
         

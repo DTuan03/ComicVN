@@ -33,7 +33,7 @@ class TrendingCell: UICollectionViewCell {
         avatarNameStackView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
             make.width.equalTo(80)
-
+            make.height.equalTo(138)
         }
         
         let infomationStackView = [categoryLabel, cosmosView, viewsLabel].vStack(5)

@@ -57,6 +57,11 @@ extension DetailCategoryViewController: NavigationViewDelegate {
         menuVC.modalPresentationStyle = .overFullScreen
         self.present(menuVC, animated: false, completion: nil)
     }
+    
+    func didTapRightAddButton(in view: UIView) {
+        let addVC = AddViewController()
+        navigationController?.pushViewController(addVC, animated: true)
+    }
 }
 
 extension DetailCategoryViewController: UITableViewDataSource {

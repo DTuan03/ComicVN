@@ -16,7 +16,7 @@ struct MenuSection {
 class MenuViewModel {
     static let shared = MenuViewModel()
     let itemsMenu = BehaviorRelay<[MenuSection]>(value: [])
-    let realm = try! Realm()
+    var realm: Realm?
     
     var menuSections: [MenuSection] = [
         MenuSection(items: [
@@ -35,7 +35,13 @@ class MenuViewModel {
     ]
     
     init() {
-        itemsMenu.accept(menuSections)
+        do {
+            realm = try Realm()
+            itemsMenu.accept(menuSections)
+        } catch {
+            print("Lỗi realm: \(error.localizedDescription)")
+            realm = nil
+        }
     }
     
     func numberOfSections() -> Int {
@@ -50,9 +56,11 @@ class MenuViewModel {
         return menuSections[indexPath.section].items[indexPath.row]
     }
     
-    func getUserName(userId: String) -> String {
-        print(userId)
-        let user = realm.objects(User.self).filter("userId == %@", userId).first
+    func getUserName(userId: String?) -> String {
+        guard let userId = userId, !userId.isEmpty else {
+            return "Người dùng"
+        }
+        let user = realm?.objects(User.self).filter("userId == %@", userId).first
         return user?.name ?? "Người dùng"
     }
 }

@@ -94,6 +94,11 @@ class BookmarkViewController: BaseViewController {
 }
 
 extension BookmarkViewController: NavigationViewDelegate {
+    func didTapRightAddButton(in view: UIView) {
+        let addVC = AddViewController()
+        navigationController?.pushViewController(addVC, animated: true)
+    }
+    
     func didTapLeftButton(in view: UIView) {
         let menuVC = MenuViewController()
         menuVC.modalPresentationStyle = .overFullScreen

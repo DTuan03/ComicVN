@@ -14,6 +14,7 @@ pod 'FirebaseAuth'
 pod 'IQKeyboardManagerSwift'
 pod 'Cosmos'
 pod 'RealmSwift'
+pod 'DropDown'
 
  post_install do |installer|
     installer.pods_project.targets.each do |target|

@@ -9,6 +9,7 @@ import SnapKit
 
 protocol NavigationViewDelegate: AnyObject {
     func didTapLeftButton(in view: UIView)
+    func didTapRightAddButton(in view: UIView)
 }
 
 class NavigationViewFactory {
@@ -32,6 +33,10 @@ class NavigationViewFactory {
         
         leftButton.addTargetClosure { _ in
             delegate?.didTapLeftButton(in: view)
+        }
+        
+        right1Button.addTargetClosure { _ in
+            delegate?.didTapRightAddButton(in: view)
         }
         
         view.addSubview(leftButton)

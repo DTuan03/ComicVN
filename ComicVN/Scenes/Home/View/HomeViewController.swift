@@ -34,7 +34,8 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     let moreOptionsImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     let moreOptionsnNewImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     
-    let detailCollectionView = CollectionViewFactory.createCollectionView(left: 16,
+    let detailCollectionView = CollectionViewFactory.createCollectionView(estimated: false,
+                                                                          left: 16,
                                                                           right: 16)
     let trendingCollectionView = CollectionViewFactory.createCollectionView(minimumInteritemSpacing: 8,
                                                                             left: 20)
@@ -45,7 +46,12 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
                                                                                   left: 24,
                                                                                   right: 24,
                                                                                   height: 84)
-  
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.itemsDetail.accept(viewModel.mapAddModelsToDetailModels(addModels: viewModel.getDetailData()))
+        viewModel.itemsTrending.accept(viewModel.mapAddModelsToDetailModels(addModels: viewModel.getTrendingData()))
+        viewModel.itemsNewComic.accept(viewModel.mapAddModelsToDetailModels(addModels: viewModel.getNewComicData()))
+    }
     override func setupUI() {
         view.addSubview(navigationView)
         navigationView.snp.makeConstraints{ make in
@@ -99,7 +105,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         categoryLabel.snp.makeConstraints { make in
             make.top.equalTo(newComicCollectionView.snp.bottom).offset(34)
             make.left.equalToSuperview().offset(16)
-            //            make.bottom.equalToSuperview()
         }
         
         setupCategoryCollectionView()
@@ -112,7 +117,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             make.left.right.equalToSuperview()
             make.height.greaterThanOrEqualTo(200)
         }
-        
         detailCollectionView.register(DetailCollectionViewCell.self, forCellWithReuseIdentifier: DetailCollectionViewCell.identifier)
         detailCollectionView.dataSource = self
         detailCollectionView.delegate = self
@@ -194,6 +198,11 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         let menuVC = MenuViewController()
         menuVC.modalPresentationStyle = .overFullScreen
         self.present(menuVC, animated: false, completion: nil)
+    }
+    
+    func didTapRightAddButton(in view: UIView) {
+        let addVC = AddViewController()
+        navigationController?.pushViewController(addVC, animated: true)
     }
 }
 

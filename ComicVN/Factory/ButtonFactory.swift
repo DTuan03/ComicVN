@@ -17,7 +17,6 @@ class ButtonFactory {
             button.imageView?.contentMode = .scaleAspectFit
             button.tintColor = imageColor
             button.titleAndIcon(hspacing: padding ?? 0)
-            
         }
         return button
     }

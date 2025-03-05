@@ -12,7 +12,7 @@ import Cosmos
 class DetailCollectionViewCell: UICollectionViewCell {
     static let identifier = "DetailCell"
     
-    let avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleAspectFit)
+    let avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleToFill)
     let nameLabel = LabelFactory.createLabel(font: UIFont.medium14, textColor: .black, textAlignment: .left)
     let authorLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .black, textAlignment: .left)
     let categoryLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .black, textAlignment: .left)
@@ -37,6 +37,8 @@ class DetailCollectionViewCell: UICollectionViewCell {
             make.top.equalToSuperview().offset(13)
             make.left.equalToSuperview().offset(15)
             make.bottom.equalToSuperview().offset(-13)
+            make.width.equalTo(90)
+            make.height.equalTo(138)
         }
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(19)
@@ -61,9 +63,9 @@ class DetailCollectionViewCell: UICollectionViewCell {
     func configData(with detail: DetailModel) {
         avatarImageView.image = detail.image
         nameLabel.text = detail.name ?? ""
-        cosmosView.rating = detail.rating ?? 0
-        authorLabel.text = "Tác giả: \(detail.author ?? "")"
-        categoryLabel.text = "Thể loại: \(String(describing: detail.category!))"
-        viewsLabel.text = "Lượt xem: \(String(describing: detail.views!))"
+        cosmosView.rating = detail.rating ?? 4
+        authorLabel.text = "Tác giả: \(detail.author ?? "Đang cậo nhật")"
+        categoryLabel.text = "Thể loại: \(detail.category ?? "Đang cập nhật")"
+        viewsLabel.text = "Lượt xem: \(detail.views ?? "0")"
     }
 }

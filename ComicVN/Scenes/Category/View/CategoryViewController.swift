@@ -19,6 +19,11 @@ class CategoryViewController: BaseViewController {
     
     private let viewModel = CategoryViewModel()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.itemsCategory.accept(viewModel.mapAddModelsToCategoryModels(addModels: viewModel.getData()))
+    }
+    
     override func setupUI() {
         view.addSubviews([navigationView, categoryCV])
         navigationView.snp.makeConstraints { make in
@@ -50,6 +55,11 @@ extension CategoryViewController: NavigationViewDelegate {
         let menuVC = MenuViewController()
         menuVC.modalPresentationStyle = .overFullScreen
         self.present(menuVC, animated: false, completion: nil)
+    }
+    
+    func didTapRightAddButton(in view: UIView) {
+        let addVC = AddViewController()
+        navigationController?.pushViewController(addVC, animated: true)
     }
 }
 

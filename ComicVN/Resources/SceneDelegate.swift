@@ -18,6 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
         let firstVC = userId.isEmpty ? LoginViewController() : HomeViewController()
         let navigation = UINavigationController(rootViewController: firstVC)
+
         window?.rootViewController = navigation
         window?.makeKeyAndVisible()
     }

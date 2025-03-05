@@ -18,7 +18,11 @@ class CollectionViewFactory {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = scrollDirection
         layout.minimumInteritemSpacing = minimumInteritemSpacing
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        if estimated {
+            layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        } else {
+            layout.itemSize = CGSize(width: UIScreen.main.bounds.width * 0.8, height: 165)
+        }
         layout.sectionInset = UIEdgeInsets(top: top, left: left, bottom: bottom, right: right)
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)

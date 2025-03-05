@@ -7,10 +7,10 @@
 import UIKit
 
 struct InfoComicModel {
-    let avatar: UIImage
-    let name: String
-    let rating: Double
-    let author: String
-    let category: String
-    let views: String
+    let avatar: UIImage?
+    let name: String?
+    let rating: Double?
+    let author: String?
+    let category: String?
+    let views: String?
 }

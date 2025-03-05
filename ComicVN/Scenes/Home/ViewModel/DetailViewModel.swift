@@ -7,6 +7,7 @@
 
 import RxSwift
 import RxCocoa
+import RealmSwift
 
 class DetailViewModel {
     let itemsDetail = BehaviorRelay<[DetailModel]>(value: [])
@@ -16,28 +17,44 @@ class DetailViewModel {
 
     
     init() {
-        let exampleData = [
-            DetailModel(image: UIImage(named: "test"), name: "Iron Man: Extremis ", rating: 5, author: "Warren Ellis", category: "Siêu Anh Hùng", views: "35.895.190"),
-            DetailModel(image: UIImage(named: "test"), name: "Captain America", rating: 5, author: "Stan Lee", category: "Siêu Anh Hùng", views: "25.895.100"),
-            DetailModel(image: UIImage(named: "test"), name: "Captain America", rating: 5, author: "Stan Lee", category: "Siêu Anh Hùng", views: "25.895.100"),
-            DetailModel(image: UIImage(named: "test"), name: "Captain America", rating: 5, author: "Stan Lee", category: "Siêu Anh Hùng", views: "25.895.100"),
-            DetailModel(image: UIImage(named: "test"), name: "Iron Man: Extremis ", rating: 5, author: "Warren Ellis", category: "Siêu Anh Hùng", views: "35.895.190"),
-            DetailModel(image: UIImage(named: "test"), name: "Captain America", rating: 5, author: "Stan Lee", category: "Siêu Anh Hùng", views: "25.895.100"),
-            DetailModel(image: UIImage(named: "test"), name: "Captain America", rating: 5, author: "Stan Lee", category: "Siêu Anh Hùng", views: "25.895.100"),
-            DetailModel(image: UIImage(named: "test"), name: "Captain America", rating: 5, author: "Stan Lee", category: "Siêu Anh Hùng", views: "25.895.100")
-        ]
-        
         let categoryData = [
             ListModel(image: UIImage(named: "topTruyen"), title: "TOP TRUYỆN", hastag: "#TRUYỆN HAY"),
             ListModel(image: UIImage(named: "xepHang"), title: "XẾP HẠNG", hastag: "#ĐỌC NHIỀU NHẤT"),
             ListModel(image: UIImage(named: "theLoai"), title: "THỂ LOẠI", hastag: "#CHUYÊN MỤC"),
             ListModel(image: UIImage(named: "bookMark"), title: "BOOK MARK", hastag: "#TRUYỆN CỦA BẠN"),
         ]
-        
-        
-        itemsDetail.accept(exampleData)
-        itemsTrending.accept(exampleData)
-        itemsNewComic.accept(exampleData)
+        itemsDetail.accept(mapAddModelsToDetailModels(addModels: getDetailData()))
+        itemsTrending.accept(mapAddModelsToDetailModels(addModels: getTrendingData()))
+        itemsNewComic.accept(mapAddModelsToDetailModels(addModels: getNewComicData()))
         itemsCategory.accept(categoryData)
+    }
+    
+    func getDetailData() -> [AddModel] {
+        return RealmHelper.get(AddModel.self)
+    }
+    
+    func getTrendingData() -> [AddModel] {
+        let predicate = NSPredicate(format: "isTrending == %@", NSNumber(value: true))
+        return RealmHelper.get(AddModel.self, filter: predicate)
+    }
+    
+    func getNewComicData() -> [AddModel] {
+        let predicate = NSPredicate(format: "isNewComic == %@", NSNumber(value: true))
+        return RealmHelper.get(AddModel.self, filter: predicate)
+    }
+    
+    func mapAddModelsToDetailModels(addModels: [AddModel]) -> [DetailModel] {
+        return addModels.map { mapAddModelToDetailModel(addModel: $0) }
+    }
+    
+    func mapAddModelToDetailModel(addModel: AddModel) -> DetailModel {
+        return DetailModel(
+            image: UIImage(data: addModel.image ?? Data()),
+            name: addModel.name,
+            rating: Double(addModel.avgRating),
+            author: addModel.author,
+            category: addModel.category,
+            views: addModel.views
+        )
     }
 }

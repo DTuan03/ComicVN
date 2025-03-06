@@ -67,12 +67,20 @@ extension UIFont {
         return UIFont(name: "Livvic-Medium", size: 18) ?? UIFont.systemFont(ofSize: 18, weight: .medium)
     }
     
+    static var medium20: UIFont {
+        return UIFont(name: "Livvic-Medium", size: 20) ?? UIFont.systemFont(ofSize: 20, weight: .medium)
+    }
+    
+    static var medium24: UIFont {
+        return UIFont(name: "Livvic-Medium", size: 24) ?? UIFont.systemFont(ofSize: 24, weight: .medium)
+    }
+    
     static var semiBold18: UIFont {
         return UIFont(name: "Livvic-SemiBold", size: 18) ?? UIFont.systemFont(ofSize: 18, weight: .medium)
     }
     
-    static var medium20: UIFont {
-        return UIFont(name: "Livvic-Medium", size: 20) ?? UIFont.systemFont(ofSize: 20, weight: .medium)
+    static var semiBold17: UIFont {
+        return UIFont(name: "Livvic-SemiBold", size: 17) ?? UIFont.systemFont(ofSize: 17, weight: .medium)
     }
     
     static var bold16: UIFont {

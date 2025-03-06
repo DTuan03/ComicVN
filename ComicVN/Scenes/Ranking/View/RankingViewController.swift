@@ -94,6 +94,7 @@ extension RankingViewController: UITableViewDataSource {
         let model = viewModel.itemsRanking.value[indexPath.row]
         cell.containerView.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
         cell.configData(with: model)
+        cell.selectionStyle = .none
         return cell
     }
 }

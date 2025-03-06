@@ -35,4 +35,8 @@ class CategoryViewModel {
     func mapAddModelToNameCategory(addModel: AddModel) -> String {
         return addModel.category
     }
+    
+    func getNameCategory(indexPath: IndexPath) -> String {
+        return itemsCategory.value[indexPath.item].name
+    }
 }

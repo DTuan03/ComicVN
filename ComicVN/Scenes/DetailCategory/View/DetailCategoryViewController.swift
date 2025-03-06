@@ -12,8 +12,10 @@ import RxCocoa
 
 class DetailCategoryViewController: BaseViewController {
     let viewModel = InfoComicViewModel()
+    
+    var categoryName: String?
     lazy var navigationView = {
-        NavigationViewFactory.createSecondNavigationView(leftImage: UIImage.arrowLeft, titleButton: "Siêu Anh Hùng", delegate: self)
+        NavigationViewFactory.createSecondNavigationView(leftImage: UIImage.arrowLeft, titleButton: categoryName ?? "", delegate: self)
     }()
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
@@ -26,6 +28,11 @@ class DetailCategoryViewController: BaseViewController {
         tableView.dataSource = self
         return tableView
     }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.itemsInfoComic.accept(viewModel.mapAddModelsToInfoComicModels(addModels: viewModel.getData(category: categoryName ?? "")))
+    }
     
     override func setupUI() {
         view.addSubviews([navigationView, tableView])
@@ -53,9 +60,10 @@ class DetailCategoryViewController: BaseViewController {
 
 extension DetailCategoryViewController: NavigationViewDelegate {
     func didTapLeftButton(in view: UIView) {
-        let menuVC = MenuViewController()
-        menuVC.modalPresentationStyle = .overFullScreen
-        self.present(menuVC, animated: false, completion: nil)
+//        let menuVC = MenuViewController()
+//        menuVC.modalPresentationStyle = .overFullScreen
+//        self.present(menuVC, animated: false, completion: nil)
+        navigationController?.popViewController(animated: true)
     }
     
     func didTapRightAddButton(in view: UIView) {

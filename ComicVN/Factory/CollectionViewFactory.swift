@@ -41,7 +41,7 @@ class CollectionViewFactory {
                                            bottom: CGFloat = 0,
                                            width: CGFloat = 0,
                                            height: CGFloat = 0) -> UICollectionView {
-        let layout = ColumnFlowLayout()
+        let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: (UIScreen.main.bounds.width - padding) / 2, height: height)
         layout.minimumInteritemSpacing = minimumInteritemSpacing
         layout.minimumLineSpacing = 10
@@ -52,6 +52,7 @@ class CollectionViewFactory {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = true
+        
         return collectionView
         
     }

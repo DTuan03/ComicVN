@@ -7,19 +7,32 @@
 
 import RxSwift
 import RxCocoa
+import RealmSwift
 
 class RankingViewModel {
     var itemsRanking = BehaviorRelay<[InfoComicModel]>(value: [])
     
     init() {
-        let exData = [
-            InfoComicModel(avatar: UIImage.test, name: "Iron Man: Extremis", rating: 4, author: "Warren Ellis", category: "Siêu anh hùng", views: "34.344.444"),
-            InfoComicModel(avatar: UIImage.test, name: "Iron Man: Extremis", rating: 4, author: "Warren Ellis", category: "Siêu anh hùng", views: "34.344.444"),
-            InfoComicModel(avatar: UIImage.test, name: "Iron Man: Extremis", rating: 4, author: "Warren Ellis", category: "Siêu anh hùng", views: "34.344.444"),
-            InfoComicModel(avatar: UIImage.test, name: "Iron Man: Extremis", rating: 4, author: "Warren Ellis", category: "Siêu anh hùng", views: "34.344.444"),
-            InfoComicModel(avatar: UIImage.test, name: "Iron Man: Extremis", rating: 4, author: "Warren Ellis", category: "Siêu anh hùng", views: "34.344.444"),
-            InfoComicModel(avatar: UIImage.test, name: "Iron Man: Extremis", rating: 4, author: "Warren Ellis", category: "Siêu anh hùng", views: "34.344.444"),
-        ]
-        itemsRanking.accept(exData)
+        itemsRanking.accept(mapAddModelsToDInfoComicModels(addModels: getData()))
+    }
+    
+    func getData() -> [AddModel] {
+        let sortDesc = SortItem(byKeyPath: "avgRating", ascending: false)
+        return RealmHelper.get(AddModel.self, sort: sortDesc)
+    }
+    
+    func mapAddModelsToDInfoComicModels(addModels: [AddModel]) -> [InfoComicModel] {
+        return addModels.map { mapAddModelToInfoComicModel(addModel: $0) }
+    }
+    
+    func mapAddModelToInfoComicModel(addModel: AddModel) -> InfoComicModel {
+        return InfoComicModel(
+            avatar: UIImage(data: addModel.image ?? Data()),
+            name: addModel.name,
+            rating: Double(addModel.avgRating),
+            author: addModel.author,
+            category: addModel.category,
+            views: addModel.views
+        )
     }
 }

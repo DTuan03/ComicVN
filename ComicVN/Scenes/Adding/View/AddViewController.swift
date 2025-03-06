@@ -99,6 +99,8 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
     
     lazy var buttonStackView = [trendingButton, newComicButton].hStack(10, distribution: .fillEqually)
     
+    lazy var ratingCosmos = CosmosViewFactory.createCosmosView(updateOnTouch: true)
+    
     lazy var topDropDown = DropDown()
     
     lazy var dropdownButton: UIButton = {
@@ -117,9 +119,8 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
         return btn
     }()
     
-    lazy var stackView = [nameTextField, authorTextField, categoryTextField, chapterTextField, summaryTextView, buttonStackView, dropdownButton].vStack(8)
+    lazy var stackView = [nameTextField, authorTextField, categoryTextField, chapterTextField, summaryTextView, ratingCosmos, buttonStackView, dropdownButton].vStack(8)
 
-    
     override func setupUI() {
         view.addSubviews([navigationView, avatarImageView, stackView, submitBtn])
         navigationView.snp.makeConstraints { make in
@@ -199,6 +200,10 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
         summaryTextView.rx.text.orEmpty.bind(to: viewModel.summary)
             .disposed(by: disposeBag)
         
+        ratingCosmos.didFinishTouchingCosmos = { rating in
+            self.viewModel.avgRating.accept(Int(rating))
+        }
+
         newComicButton.rx.tap.subscribe(onNext: { [weak self] in
             guard let self = self else {return}
             self.newComicButton.isSelected.toggle()

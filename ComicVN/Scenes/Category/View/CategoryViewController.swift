@@ -19,11 +19,6 @@ class CategoryViewController: BaseViewController {
     
     private let viewModel = CategoryViewModel()
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.itemsCategory.accept(viewModel.mapAddModelsToCategoryModels(addModels: viewModel.getData()))
-    }
-    
     override func setupUI() {
         view.addSubviews([navigationView, categoryCV])
         navigationView.snp.makeConstraints { make in
@@ -72,12 +67,21 @@ extension CategoryViewController: UICollectionViewDataSource {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifier, for: indexPath) as? CategoryCell else {
             return UICollectionViewCell()
         }
-      
         let model = viewModel.itemsCategory.value[indexPath.item]
         cell.configData(with: model, indexPath: indexPath)
+        cell.indexPath = indexPath
+        cell.delegate =  self
         return cell
     }
 }
 
 extension CategoryViewController: UICollectionViewDelegate {
+}
+
+extension CategoryViewController: CategoryDelegateCell {
+    func didTapCell(index: IndexPath) {
+        let detailCategoryVC = DetailCategoryViewController()
+        detailCategoryVC.categoryName = viewModel.getNameCategory(indexPath: index)
+        navigationController?.pushViewController(detailCategoryVC, animated: true)
+    }
 }

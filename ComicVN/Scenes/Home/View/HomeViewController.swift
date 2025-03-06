@@ -161,7 +161,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     }
     
     override func bindState() {
-        
         viewModel.itemsDetail
             .subscribe(onNext: { [weak self] newItems in
                 guard let self = self else {return}
@@ -255,4 +254,28 @@ extension HomeViewController: UICollectionViewDataSource {
 }
 
 extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch collectionView {
+        case detailCollectionView:
+            print("co v")
+            let detailComicVC = DetailComicViewController()
+            detailComicVC.name = viewModel.itemsDetail.value[indexPath.item].name
+            navigationController?.pushViewController(detailComicVC, animated: true)
+            return
+        case trendingCollectionView:
+            print("co v")
+
+            let detailComicVC = DetailComicViewController()
+            detailComicVC.name = viewModel.itemsTrending.value[indexPath.item].name
+            navigationController?.pushViewController(detailComicVC, animated: true)
+            return
+        case newComicCollectionView:
+            let detailComicVC = DetailComicViewController()
+            detailComicVC.name = viewModel.itemsNewComic.value[indexPath.item].name
+            navigationController?.pushViewController(detailComicVC, animated: true)
+            return
+        default:
+            return
+        }
+    }
 }

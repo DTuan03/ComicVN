@@ -13,7 +13,7 @@ class AddModel: Object {
     @objc dynamic var avgRating: Int = 0
     @objc dynamic var category: String = ""
     @objc dynamic var author: String = ""
-    @objc dynamic var views: String = ""
+    @objc dynamic var views: String = "0"
     @objc dynamic var totalChapter: Int = 0
     @objc dynamic var status: Bool = false
     @objc dynamic var summary: String = ""

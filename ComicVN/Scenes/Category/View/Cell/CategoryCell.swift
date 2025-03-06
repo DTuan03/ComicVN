@@ -8,8 +8,16 @@
 import UIKit
 import SnapKit
 
+protocol CategoryDelegateCell: AnyObject {
+    func didTapCell(index: IndexPath)
+}
+
 class CategoryCell: UICollectionViewCell {
     static let identifier = "CategoryCell"
+    
+    weak var delegate: CategoryDelegateCell?
+    var indexPath: IndexPath?
+
     let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 5
@@ -32,10 +40,19 @@ class CategoryCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.layer.cornerRadius = 5
         setupUI()
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        self.addGestureRecognizer(tapGesture)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func cellTapped() {
+        if let indexPath = indexPath {
+            delegate?.didTapCell(index: indexPath)
+        }
     }
     
     private func setupUI() {

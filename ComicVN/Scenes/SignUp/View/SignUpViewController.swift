@@ -106,10 +106,6 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
         scrollView.addSubview(contentView)
         contentView.snp.makeConstraints { make in
             make.edges.equalTo(scrollView)
-//            make.top.equalTo(scrollView.snp.top)
-//            make.left.equalTo(scrollView.snp.left)
-//            make.right.equalTo(scrollView.snp.right)
-//            make.bottom.equalTo(scrollView.snp.bottom)
             make.width.equalTo(scrollView.snp.width)
         }
         

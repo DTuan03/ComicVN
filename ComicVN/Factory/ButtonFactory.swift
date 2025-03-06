@@ -10,7 +10,6 @@ class ButtonFactory {
         button.backgroundColor = bgColor
         button.layer.cornerRadius = rounded ? 6 : 0
         button.layer.masksToBounds = true
-        button.translatesAutoresizingMaskIntoConstraints = false
         
         if let image = image {
             button.setImage(image, for: .normal)

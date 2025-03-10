@@ -15,6 +15,7 @@ pod 'IQKeyboardManagerSwift'
 pod 'Cosmos'
 pod 'RealmSwift'
 pod 'DropDown'
+pod 'Kingfisher'
 
  post_install do |installer|
     installer.pods_project.targets.each do |target|

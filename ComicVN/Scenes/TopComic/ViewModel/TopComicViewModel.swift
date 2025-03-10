@@ -11,7 +11,7 @@ import RxCocoa
 import RealmSwift
 
 class TopComicViewModel {
-    var items = BehaviorRelay<(Int, [InfoComicModel])>(value: (10, []))
+    var items = BehaviorRelay<([TopComicModel])>(value: ([]))
     var selectedSegment = BehaviorRelay<Int>(value: 0)
     let disposeBag = DisposeBag()
     
@@ -19,50 +19,59 @@ class TopComicViewModel {
         setupBinding()
     }
     
-    func getWeak() -> [AddModel] {
-        let predicate = NSPredicate(format: "topWeak == %@", NSNumber(value: true))
-        return RealmHelper.get(AddModel.self, filter: predicate)
+    func fetchTopComics(for type: String) {
+        let urlString = "https://otruyenapi.com/v1/api/danh-sach/hoan-thanh?page=\(type)"
+        
+        DispatchQueue.global(qos: .background).async {
+            APIHelper.fetchData(urlString: urlString, method: "GET", parameters: nil) { [weak self] (result: Result<WelcomeHome, Error>) in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let response):
+                    let mappedItems = self.mapItemsToTopComicModels(itemModels: response.data.items)
+                    
+                    DispatchQueue.main.async {
+                        self.items.accept(mappedItems)
+                    }
+                case .failure(let error):
+                    print("Lỗi khi gọi API: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-    func getMonths() -> [AddModel] {
-        let predicate = NSPredicate(format: "topMonth == %@", NSNumber(value: true))
-        return RealmHelper.get(AddModel.self, filter: predicate)
-    }
-    
-    func getReview() -> [AddModel] {
-        let predicate = NSPredicate(format: "topReviews == %@", NSNumber(value: true))
-        return RealmHelper.get(AddModel.self, filter: predicate)
-    }
-    
-    func mapAddModelsToInfoComicModels(addModels: [AddModel]) -> [InfoComicModel] {
-        return addModels.map { mapAddModelToInfoComicModel(addModel: $0) }
-    }
-
-    func mapAddModelToInfoComicModel(addModel: AddModel) -> InfoComicModel {
-        return InfoComicModel(
-            avatar: UIImage(data: addModel.image ?? Data()),
-            name: addModel.name,
-            rating: Double(addModel.avgRating),
-            author: addModel.author,
-            category: addModel.category,
-            views: addModel.views
+    func mapItemToTopComicModel(itemsModel: Item) -> TopComicModel {
+        let urlImage = URL(string: "https://img.otruyenapi.com/uploads/comics/" + (itemsModel.thumb_url ?? ""))
+        return TopComicModel(
+            avatar: urlImage,
+            name: itemsModel.name,
+            rating: 4,
+            author: "Đang cập nhật",
+            category: itemsModel.category?[0].name ?? "Đang cập nhật",
+            views: "Đang cập nhật"
         )
+    }
+    
+    func mapItemsToTopComicModels(itemModels: [Item]) -> [TopComicModel] {
+        return itemModels.map { mapItemToTopComicModel(itemsModel: $0) }
     }
     
     func setupBinding() {
         selectedSegment
-            .map { index -> (Int, [InfoComicModel]) in
+            .subscribe(onNext: { [weak self] index in
+                guard let self = self else { return }
+                
                 switch index {
                 case 0:
-                    return (0, self.mapAddModelsToInfoComicModels(addModels: self.getWeak()))
+                    self.fetchTopComics(for: "2")
                 case 1:
-                    return (1, self.mapAddModelsToInfoComicModels(addModels: self.getMonths()))
+                    self.fetchTopComics(for: "3")
                 case 2:
-                    return (2, self.mapAddModelsToInfoComicModels(addModels: self.getReview()))
-                default: return (10, [])
+                    self.fetchTopComics(for: "4")
+                default:
+                    self.items.accept([])
                 }
-            }
-            .bind(to: items)
+            })
             .disposed(by: disposeBag)
     }
 }

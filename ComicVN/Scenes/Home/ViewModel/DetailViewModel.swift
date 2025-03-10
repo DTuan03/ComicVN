@@ -14,7 +14,6 @@ class DetailViewModel {
     let itemsTrending = BehaviorRelay<[DetailModel]>(value: [])
     let itemsNewComic = BehaviorRelay<[DetailModel]>(value: [])
     let itemsCategory = BehaviorRelay<[ListModel]>(value: [])
-
     
     init() {
         let categoryData = [
@@ -23,38 +22,74 @@ class DetailViewModel {
             ListModel(image: UIImage(named: "theLoai"), title: "THỂ LOẠI", hastag: "#CHUYÊN MỤC"),
             ListModel(image: UIImage(named: "bookMark"), title: "BOOK MARK", hastag: "#TRUYỆN CỦA BẠN"),
         ]
-        itemsDetail.accept(mapAddModelsToDetailModels(addModels: getDetailData()))
-        itemsTrending.accept(mapAddModelsToDetailModels(addModels: getTrendingData()))
-        itemsNewComic.accept(mapAddModelsToDetailModels(addModels: getNewComicData()))
+        featchDetail()
+        featchTrending()
+        featchNewComic()
         itemsCategory.accept(categoryData)
     }
     
-    func getDetailData() -> [AddModel] {
-        return RealmHelper.get(AddModel.self)
+    func featchDetail() {
+        DispatchQueue.main.async {
+            APIHelper.fetchData(urlString: "https://otruyenapi.com/v1/api/home", method: "GET", parameters: nil) { (result: Result<WelcomeHome, Error>) in
+                switch result {
+                case .success(let response):
+                    let items = self.mapItemsToDetailModels(itemModels: response.data.items)
+                    DispatchQueue.main.async {
+                        self.itemsDetail.accept(items)
+                    }
+                case .failure(let error):
+                    print("Lỗi khi gọi API: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-    func getTrendingData() -> [AddModel] {
-        let predicate = NSPredicate(format: "isTrending == %@", NSNumber(value: true))
-        return RealmHelper.get(AddModel.self, filter: predicate)
+    func featchTrending() {
+        DispatchQueue.main.async {
+            APIHelper.fetchData(urlString: "https://otruyenapi.com/v1/api/danh-sach/hoan-thanh?page=1", method: "GET", parameters: nil) { (result: Result<WelcomeHome, Error>) in
+                switch result {
+                case .success(let response):
+                    let items = self.mapItemsToDetailModels(itemModels: response.data.items)
+                    DispatchQueue.main.async {
+                        self.itemsTrending.accept(items)
+                    }
+                case .failure(let error):
+                    print("Lỗi khi gọi API: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-    func getNewComicData() -> [AddModel] {
-        let predicate = NSPredicate(format: "isNewComic == %@", NSNumber(value: true))
-        return RealmHelper.get(AddModel.self, filter: predicate)
+    func featchNewComic() {
+        DispatchQueue.main.async {
+            APIHelper.fetchData(urlString: "https://otruyenapi.com/v1/api/danh-sach/truyen-moi?page=1", method: "GET", parameters: nil) { (result: Result<WelcomeHome, Error>) in
+                switch result {
+                case .success(let response):
+                    let items = self.mapItemsToDetailModels(itemModels: response.data.items)
+                    DispatchQueue.main.async {
+                        self.itemsNewComic.accept(items)
+                    }
+                case .failure(let error):
+                    print("Lỗi khi gọi API: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-    func mapAddModelsToDetailModels(addModels: [AddModel]) -> [DetailModel] {
-        return addModels.map { mapAddModelToDetailModel(addModel: $0) }
-    }
-    
-    func mapAddModelToDetailModel(addModel: AddModel) -> DetailModel {
+    func mapItemToDetailModel(itemsModel: Item) -> DetailModel {
+        let urlImage = URL(string: "https://img.otruyenapi.com/uploads/comics/" + (itemsModel.thumb_url ?? ""))
         return DetailModel(
-            image: UIImage(data: addModel.image ?? Data()),
-            name: addModel.name,
-            rating: Double(addModel.avgRating),
-            author: addModel.author,
-            category: addModel.category,
-            views: addModel.views
+            image: urlImage,
+            name: itemsModel.name,
+            rating: 4,
+            author: "Đang cập nhật",
+            category: itemsModel.category?[0].name ?? "Đang cập nhật",
+            views: "Đang cập nhật"
         )
     }
+    
+    func mapItemsToDetailModels(itemModels: [Item]) -> [DetailModel] {
+        return itemModels.map { mapItemToDetailModel(itemsModel: $0) }
+    }
 }
+

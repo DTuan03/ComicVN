@@ -75,12 +75,16 @@ extension UIFont {
         return UIFont(name: "Livvic-Medium", size: 24) ?? UIFont.systemFont(ofSize: 24, weight: .medium)
     }
     
-    static var semiBold18: UIFont {
-        return UIFont(name: "Livvic-SemiBold", size: 18) ?? UIFont.systemFont(ofSize: 18, weight: .medium)
+    static var semiBold16: UIFont {
+        return UIFont(name: "Livvic-SemiBold", size: 16) ?? UIFont.systemFont(ofSize: 16, weight: .medium)
     }
     
     static var semiBold17: UIFont {
         return UIFont(name: "Livvic-SemiBold", size: 17) ?? UIFont.systemFont(ofSize: 17, weight: .medium)
+    }
+    
+    static var semiBold18: UIFont {
+        return UIFont(name: "Livvic-SemiBold", size: 18) ?? UIFont.systemFont(ofSize: 18, weight: .medium)
     }
     
     static var bold16: UIFont {

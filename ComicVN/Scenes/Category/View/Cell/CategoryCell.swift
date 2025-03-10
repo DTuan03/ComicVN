@@ -21,18 +21,17 @@ class CategoryCell: UICollectionViewCell {
     let containerView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 5
-        
         return view
     }()
     
-    lazy var nameLabel = LabelFactory.createLabel(font: .medium18, textAlignment: .center)
+    lazy var nameLabel = LabelFactory.createLabel(font: .medium18,
+                                                  textAlignment: .center)
     lazy var numberLabel = LabelFactory.createLabel(font: .medium12,
                                                     textColor: UIColor(hex: "#434040"),
                                                     textAlignment: .center)
     let view: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 2.5
-        
         return view
     }()
     
@@ -40,7 +39,6 @@ class CategoryCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.layer.cornerRadius = 5
         setupUI()
-        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
         self.addGestureRecognizer(tapGesture)
     }
@@ -90,7 +88,7 @@ class CategoryCell: UICollectionViewCell {
             view.backgroundColor = UIColor(hex: "#FF7B00")
         }
         nameLabel.text = model.name
-        numberLabel.text = " \(model.number) truyện"
+        numberLabel.text = " \(model.number ?? "Đang cập nhật") truyện"
         
     }
 }

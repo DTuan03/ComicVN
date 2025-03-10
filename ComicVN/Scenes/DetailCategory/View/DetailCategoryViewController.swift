@@ -14,6 +14,7 @@ class DetailCategoryViewController: BaseViewController {
     let viewModel = InfoComicViewModel()
     
     var categoryName: String?
+    var categorySlug: String?
     lazy var navigationView = {
         NavigationViewFactory.createSecondNavigationView(leftImage: UIImage.arrowLeft, titleButton: categoryName ?? "", delegate: self)
     }()
@@ -31,7 +32,7 @@ class DetailCategoryViewController: BaseViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.itemsInfoComic.accept(viewModel.mapAddModelsToInfoComicModels(addModels: viewModel.getData(category: categoryName ?? "")))
+        viewModel.fetchTopComics(for: categorySlug ?? "")
     }
     
     override func setupUI() {

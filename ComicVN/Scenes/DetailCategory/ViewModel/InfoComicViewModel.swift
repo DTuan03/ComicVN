@@ -15,24 +15,43 @@ class InfoComicViewModel {
 //    init() {
 //        itemsInfoComic.accept()
 //    }
-//    
-    func getData(category: String) -> [AddModel] {
-        let predicate = NSPredicate(format: "category == %@", category)
-        return RealmHelper.get(AddModel.self, filter: predicate)
+//
+    func fetchTopComics(for type: String) {
+        print(type)
+        let urlString = "https://otruyenapi.com/v1/api/the-loai/\(type)?page=2"
+        
+        DispatchQueue.global(qos: .background).async {
+            APIHelper.fetchData(urlString: urlString, method: "GET", parameters: nil) { [weak self] (result: Result<WelcomeInfoComic, Error>) in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let response):
+                    let mappedItems = self.mapItemsToInfoComicModels(itemModels: response.data.items)
+                    
+                    DispatchQueue.main.async {
+                        self.itemsInfoComic.accept(mappedItems)
+                    }
+                case .failure(let error):
+                    print("Lỗi khi gọi API: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-    func mapAddModelsToInfoComicModels(addModels: [AddModel]) -> [InfoComicModel] {
-        return addModels.map { mapAddModelToInfoComicModel(addModel: $0) }
+    func mapItemsToInfoComicModels(itemModels: [ItemInfoComic]) -> [InfoComicModel] {
+        return itemModels.map { mapItemToInfoComicModel(itemModel: $0) }
     }
 
-    func mapAddModelToInfoComicModel(addModel: AddModel) -> InfoComicModel {
+    func mapItemToInfoComicModel(itemModel: ItemInfoComic) -> InfoComicModel {
+        let urlImage = URL(string: "https://img.otruyenapi.com/uploads/comics/" + (itemModel.thumb_url))
         return InfoComicModel(
-            avatar: UIImage(data: addModel.image ?? Data()),
-            name: addModel.name,
-            rating: Double(addModel.avgRating),
-            author: addModel.author,
-            category: addModel.category,
-            views: addModel.views
+            avatar: urlImage,
+            name: itemModel.name,
+            rating: 5,
+            author: "Đang cập nhật",
+            category: itemModel.category[0].name,
+            views: "Đang cập nhật"
+           
         )
     }
 }

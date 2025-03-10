@@ -52,6 +52,7 @@ class CollectionViewFactory {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = true
+        collectionView.isUserInteractionEnabled = true
         
         return collectionView
         

@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Cosmos
+import Kingfisher
 
 class InfoComicCell: UITableViewCell {
     static let identifier = "InfoComicCell"
@@ -108,11 +109,11 @@ class InfoComicCell: UITableViewCell {
     }
     
     func configData(with model: InfoComicModel) {
-        avartaImageView.image = model.avatar
+        avartaImageView.kf.setImage(with: model.avatar)
         nameLabel.text = model.name
         cosmos.rating = model.rating ?? 0
         authorLabel.text = "Tác giả: \(model.author ?? "Đang cập nhật")"
         categoryLabel.text = "Thể loại: \(model.category ?? "Đang cập nhật")"
-        viewsLabel.text = "  Lượt xem: \(model.views ?? "Đang cập nhật")   "
+        viewsLabel.text = "  Lượt xem: \(model.views ?? "Đang cập nhật")    "
     }
 }

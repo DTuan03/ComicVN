@@ -9,27 +9,46 @@ import UIKit
 import SnapKit
 
 class DetailComicViewController: BaseViewController {
+    var data: [DescribeModel] = [
+        DescribeModel(title: "Lượt xem", value: "3.123.412"),
+        DescribeModel(title: "Số chương", value: "25"),
+        DescribeModel(title: "Tác giả", value: "Warren Ellis"),
+        DescribeModel(title: "Thể loại", value: "Khoa hoc"),
+        DescribeModel(title: "Trạng thái", value: "Đang cập nhật"),
+        DescribeModel(title: "Tóm tắt", value: "")
+    ]
     var viewModel = DetailComicViewModel()
+    let userId = UserDefaults.standard.value(forKey: "userId")
     var name: String?
-    lazy var backBtn = ButtonFactory.createButton(image: .arrowLeft, bgColor: .clear)
+    var isSelected: Bool = false
+    lazy var backBtn = ButtonFactory.createButton(image: .arrowLeft,
+                                                  bgColor: .clear)
     lazy var followBtn = {
-        let btn = ButtonFactory.createButton("Theo dõi", image: .follow, font: .medium14, textColor: .white, bgColor: .clear)
-        btn.titleEdgeInsets = UIEdgeInsets(top: 25, left: -30, bottom: 0, right: 0)
-        btn.imageEdgeInsets = UIEdgeInsets(top: -25, left: 25, bottom: 0, right: 0)
+        let btn = ButtonFactory.createButton(image: .follow,
+                                             font: .medium14,
+                                             textColor: .white,
+                                             bgColor: .clear)
         return btn
     }()
     
     lazy var image = {
-        let image = ImageViewFactory.createImageView(image: .test, contentMode: .scaleToFill)
+        let image = ImageViewFactory.createImageView(image: .test,
+                                                     contentMode: .scaleToFill)
         image.layer.cornerRadius = 15
         image.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMaxYCorner]
         image.layer.masksToBounds = true
         return image
     }()
     
-    lazy var titleLabel = LabelFactory.createLabel(text: "Iron Man: Extremis", font: .medium24, textColor: .white)
+    lazy var titleLabel = LabelFactory.createLabel(text: "Iron Man: Extremis",
+                                                   font: .medium24,
+                                                   textColor: .white)
     lazy var ratingCosmos = CosmosViewFactory.createCosmosView()
-    lazy var readBtn = ButtonFactory.createButton("Đọc truyện", font: .semiBold17, textColor: .black, bgColor: .white, rounded: true)
+    lazy var readBtn = ButtonFactory.createButton("Đọc truyện",
+                                                  font: .semiBold17,
+                                                  textColor: .black,
+                                                  bgColor: .white,
+                                                  rounded: true)
     
     lazy var stackView = [[titleLabel, ratingCosmos].vStack(3), readBtn].vStack(60, alignment: .center)
     
@@ -74,13 +93,48 @@ class DetailComicViewController: BaseViewController {
         return view
     }()
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.itemDetailComics.accept(viewModel.mapAddModelToDetailComicModel(addModel: viewModel.getData(name: name ?? "")))
-        image.image = viewModel.itemDetailComics.value.image
-        titleLabel.text = viewModel.itemDetailComics.value.name
-        ratingCosmos.rating = viewModel.itemDetailComics.value.rating ?? 0
-    }
+    lazy var updateLabel = {
+        let label = LabelFactory.createLabel(text: "Cập nhật đến",
+                                             font: .medium16,
+                                             textColor: UIColor(hex: "#FF7B00"))
+        return label
+    }()
+    
+    lazy var chapterLabel = {
+        let label = LabelFactory.createLabel(text: "Chương 54",
+                                             font: .medium14,
+                                             textColor: .black)
+        return label
+    }()
+    
+    lazy var menuChapterIV = ImageViewFactory.createImageView(image: .menuChapter)
+    lazy var lineVerticalIV = ImageViewFactory.createImageView(image: .lineVertical)
+    lazy var sortIV = ImageViewFactory.createImageView(image: .desc)
+    
+    lazy var ivStackView = [menuChapterIV, lineVerticalIV, sortIV].hStack(8)
+
+    lazy var descripTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
+        tableView.isScrollEnabled = true
+        tableView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+        tableView.register(DescribeCell.self, forCellReuseIdentifier: DescribeCell.identifier)
+//        tableView.delegate = self
+        tableView.dataSource = self
+        return tableView
+    }()
+    
+    lazy var chapterTableView: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .white
+        tableView.isScrollEnabled = true
+        tableView.contentInset = UIEdgeInsets(top: 24, left: 11, bottom: 0, right: 11)
+        tableView.register(ChapterCell.self, forCellReuseIdentifier: ChapterCell.identifier)
+//        tableView.delegate = self
+        tableView.dataSource = self
+        return tableView
+    }()
     
     override func setupUI() {
         view.backgroundColor = UIColor(hex: "#EAA2A2")
@@ -88,12 +142,13 @@ class DetailComicViewController: BaseViewController {
         backBtn.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             make.left.equalToSuperview().offset(26)
+            make.width.height.equalTo(24)
         }
         
         followBtn.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.right.equalToSuperview().inset(15)
-            make.height.equalTo(50)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.right.equalToSuperview().inset(33)
+            make.width.height.equalTo(24)
         }
         
         image.snp.makeConstraints { make in
@@ -138,11 +193,44 @@ class DetailComicViewController: BaseViewController {
             make.height.equalTo(1)
             make.width.equalToSuperview().multipliedBy(0.5)
         }
-        descriptionBottomLine.snp.makeConstraints { make in
+        chapterBottomLine.snp.makeConstraints { make in
             make.top.equalTo(segmentedControl.snp.bottom)
             make.left.equalTo(descriptionBottomLine.snp.right)
             make.height.equalTo(1)
             make.width.equalToSuperview().multipliedBy(0.5)
+        }
+        setupUIChapter()
+    }
+    
+    private func setupUIDescription() {
+        containerView.addSubview(descripTableView)
+        descripTableView.snp.makeConstraints { make in
+            make.top.equalTo(descriptionBottomLine.snp.bottom)
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+    }
+    
+    private func setupUIChapter() {
+        containerView.addSubviews([updateLabel, chapterLabel, ivStackView, chapterTableView])
+        updateLabel.snp.makeConstraints { make in
+            make.top.equalTo(descriptionBottomLine.snp.bottom).offset(8)
+            make.left.equalToSuperview().offset(13)
+            make.height.equalTo(34)
+        }
+        chapterLabel.snp.makeConstraints { make in
+            make.top.equalTo(descriptionBottomLine.snp.bottom).offset(8)
+            make.left.equalTo(updateLabel.snp.right).offset(8)
+            make.height.equalTo(34)
+        }
+        ivStackView.snp.makeConstraints { make in
+            make.top.equalTo(descriptionBottomLine.snp.bottom).offset(8)
+            make.right.equalToSuperview().inset(24)
+        }
+        chapterTableView.snp.makeConstraints { make in
+            make.top.equalTo(updateLabel.snp.bottom).offset(10)
+            make.left.right.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -152,11 +240,49 @@ class DetailComicViewController: BaseViewController {
             navigationController?.popViewController(animated: true)
         })
         .disposed(by: disposeBag)
-        
-        followBtn.rx.tap.subscribe(onNext: { [weak self] in
-            guard let self = self else {return}
-           
-        })
-        .disposed(by: disposeBag)
     }
+}
+
+extension DetailComicViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2 
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0 {
+            return 6
+        } else {
+            return 1
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: DescribeCell.identifier, for: indexPath) as? DescribeCell else {
+            return UITableViewCell()
+        }
+        if indexPath.section == 0 {
+            cell.setupUISection1()
+            let model = data[indexPath.row]
+            cell.configData(model: model)
+            if indexPath.row == 3 {
+                cell.valueLabel.layer.cornerRadius = 17
+                cell.valueLabel.textColor = UIColor(hex: "#6604A1", alpha: 0.5)
+                cell.valueLabel.layer.borderColor = UIColor(hex: "#6604A1", alpha: 0.5).cgColor
+                cell.valueLabel.layer.borderWidth = 1
+                let labelWidth = cell.valueLabel.sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: cell.valueLabel.frame.height)).width
+                cell.valueLabel.snp.makeConstraints { make in
+                    make.width.equalTo(labelWidth + 20)
+                }
+            }
+        } else {
+            cell.setupUISection2()
+            cell.valueLabel.text = "Phần ngoại truyện Extremis được chuyển thể trong một mini-series truyện tranh chuyển động bao gồm 6 tập có tên. Loạt phim nhỏ được tạo ra bởi Marvel Knights Animation và phát hành trên iTunes vào ngày 16 tháng 4 năm 2010."
+            cell.valueLabel.textAlignment = .left
+            cell.valueLabel.numberOfLines = 0
+        }
+        
+        return cell
+    }
+    
+    
 }

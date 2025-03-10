@@ -13,7 +13,11 @@ class TopComicViewController: BaseViewController {
     lazy var viewModel = TopComicViewModel()
     
     lazy var navigationView = {
-        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "topComics", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
+        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"),
+                                                       title: "topComics",
+                                                       right1Image: UIImage(named: "add"),
+                                                       right2Image: UIImage(named: "search"),
+                                                       delegate: self)
         
     }()
     
@@ -58,7 +62,7 @@ class TopComicViewController: BaseViewController {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
-        tableView.register(InfoComicCell.self, forCellReuseIdentifier: InfoComicCell.identifier)
+        tableView.register(TopComicCell.self, forCellReuseIdentifier: TopComicCell.identifier)
         tableView.separatorStyle = .none
         tableView.backgroundColor = .white
         tableView.isScrollEnabled = true
@@ -117,7 +121,7 @@ class TopComicViewController: BaseViewController {
         viewModel.items
             .subscribe(onNext: { [weak self] newItems in
                 guard let self = self else {return}
-                self.updateBottomLineSegment(at: newItems.0)
+                self.updateBottomLineSegment(at: self.viewModel.selectedSegment.value)
                 self.tableView.reloadData()
             })
             .disposed(by: disposeBag)
@@ -126,14 +130,17 @@ class TopComicViewController: BaseViewController {
     private func updateBottomLineSegment(at index: Int) {
         switch index {
         case 0:
+            tableView.contentOffset.y = 0
             weakBottomLine.backgroundColor = UIColor(hex: "#FF7B00")
             monthBottomLine.backgroundColor = .black
             reviewBottomLine.backgroundColor = .black
         case 1:
+            tableView.contentOffset.y = 0
             weakBottomLine.backgroundColor = .black
             monthBottomLine.backgroundColor = UIColor(hex: "#FF7B00")
             reviewBottomLine.backgroundColor = .black
         case 2:
+            tableView.contentOffset.y = 0
             weakBottomLine.backgroundColor = .black
             monthBottomLine.backgroundColor = .black
             reviewBottomLine.backgroundColor = UIColor(hex: "#FF7B00")
@@ -158,13 +165,13 @@ extension TopComicViewController: NavigationViewDelegate {
 
 extension TopComicViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.items.value.1.count
+        return viewModel.items.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: InfoComicCell.identifier, for: indexPath) as? InfoComicCell else { return UITableViewCell()
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TopComicCell.identifier, for: indexPath) as? TopComicCell else { return UITableViewCell()
         }
-        let model = viewModel.items.value.1[indexPath.item]
+        let model = viewModel.items.value[indexPath.item]
         cell.configData(with: model)
         
         return cell

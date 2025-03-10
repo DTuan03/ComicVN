@@ -11,32 +11,39 @@ import RealmSwift
 
 class CategoryViewModel {
     let itemsCategory = BehaviorRelay<[CategoryModel]>(value: [])
-    
+    private let disposeBag = DisposeBag()
+
     init() {
-        itemsCategory.accept(mapAddModelsToCategoryModels(addModels: getData()))
+        fetchCategory()
     }
-    
-    func getData() -> [AddModel] {
-        return RealmHelper.get(AddModel.self)
-    }
-    
-    func mapAddModelsToCategoryModels(addModels: [AddModel]) -> [CategoryModel] {
-        let categoryCounts = addModels.reduce(into: [String: Int]()) { (countDict, item) in
-            countDict[item.category, default: 0] += 1
+
+    func fetchCategory() {
+        DispatchQueue.global(qos: .background).async {
+            APIHelper.fetchData(urlString: "https://otruyenapi.com/v1/api/the-loai", method: "GET", parameters: nil) { [weak self] (result: Result<WelcomeCategory, Error>) in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let response):
+                    let items = self.mapItemsToCategoryModels(itemModels: response.data.items)
+                    DispatchQueue.main.async {
+                        self.itemsCategory.accept(items)
+                    }
+                case .failure(let error):
+                    print("Lỗi khi gọi API: \(error.localizedDescription)")
+                }
+            }
         }
-        
-        let categoryModels = categoryCounts.map { (name, count) in
-            CategoryModel(name: name, number: "\(count)")
-        }
-        
-        return categoryModels
     }
-    
-    func mapAddModelToNameCategory(addModel: AddModel) -> String {
-        return addModel.category
+
+    func mapItemToCategoryModel(itemsModel: ItemCategory) -> CategoryModel {
+        return CategoryModel(
+            name: itemsModel.name,
+            number: "Đang cập nhật",
+            slug: itemsModel.slug
+        )
     }
-    
-    func getNameCategory(indexPath: IndexPath) -> String {
-        return itemsCategory.value[indexPath.item].name
+
+    func mapItemsToCategoryModels(itemModels: [ItemCategory]) -> [CategoryModel] {
+        return itemModels.map { mapItemToCategoryModel(itemsModel: $0) }
     }
 }

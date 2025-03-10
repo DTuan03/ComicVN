@@ -37,6 +37,11 @@ class BookmarkViewController: BaseViewController {
         return tableView
     }()
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.itemsBookmark.accept(viewModel.mapAddModelsToBookmarkModels(bookmarkModel: viewModel.getBookmark(userId: UserDefaults.standard.value(forKey: "userId") as? String ?? "")))
+    }
+    
     override func setupUI() {
         view.addSubviews([navigationView, titleLabel, deleteButton, tableView])
         navigationView.snp.makeConstraints { make in

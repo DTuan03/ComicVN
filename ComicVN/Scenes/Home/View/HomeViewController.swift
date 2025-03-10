@@ -46,12 +46,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
                                                                                   left: 24,
                                                                                   right: 24,
                                                                                   height: 84)
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.itemsDetail.accept(viewModel.mapAddModelsToDetailModels(addModels: viewModel.getDetailData()))
-        viewModel.itemsTrending.accept(viewModel.mapAddModelsToDetailModels(addModels: viewModel.getTrendingData()))
-        viewModel.itemsNewComic.accept(viewModel.mapAddModelsToDetailModels(addModels: viewModel.getNewComicData()))
-    }
     override func setupUI() {
         view.addSubview(navigationView)
         navigationView.snp.makeConstraints{ make in
@@ -158,6 +152,7 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         categoryCollectionView.register(ListCell.self, forCellWithReuseIdentifier: ListCell.identifier)
         categoryCollectionView.dataSource = self
         categoryCollectionView.delegate = self
+        categoryCollectionView.isUserInteractionEnabled = true
     }
     
     override func bindState() {
@@ -190,9 +185,7 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             })
             .disposed(by: disposeBag)
     }
-    
-    override func setupEvent() {}
-    
+        
     func didTapLeftButton(in view: UIView) {
         let menuVC = MenuViewController()
         menuVC.modalPresentationStyle = .overFullScreen
@@ -227,6 +220,8 @@ extension HomeViewController: UICollectionViewDataSource {
             }
             let model =  viewModel.itemsDetail.value[indexPath.item]
             cell.configData(with: model)
+            cell.indexPath = indexPath
+            cell.delegate = self
             return cell
         case trendingCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrendingCell.identifier, for: indexPath) as? TrendingCell else {
@@ -234,6 +229,9 @@ extension HomeViewController: UICollectionViewDataSource {
             }
             let model = viewModel.itemsTrending.value[indexPath.item]
             cell.configData(with: model)
+            cell.indexPath = indexPath
+            cell.collectionView = trendingCollectionView
+            cell.delegate = self
             return cell
         case newComicCollectionView:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrendingCell.identifier, for: indexPath) as? TrendingCell else {
@@ -241,6 +239,9 @@ extension HomeViewController: UICollectionViewDataSource {
             }
             let model =  viewModel.itemsNewComic.value[indexPath.item]
             cell.configData(with: model)
+            cell.indexPath = indexPath
+            cell.collectionView = newComicCollectionView
+            cell.delegate = self
             return cell
         default:
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCell.identifier, for: indexPath) as? ListCell else {
@@ -257,14 +258,11 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch collectionView {
         case detailCollectionView:
-            print("co v")
             let detailComicVC = DetailComicViewController()
             detailComicVC.name = viewModel.itemsDetail.value[indexPath.item].name
             navigationController?.pushViewController(detailComicVC, animated: true)
             return
         case trendingCollectionView:
-            print("co v")
-
             let detailComicVC = DetailComicViewController()
             detailComicVC.name = viewModel.itemsTrending.value[indexPath.item].name
             navigationController?.pushViewController(detailComicVC, animated: true)
@@ -277,5 +275,25 @@ extension HomeViewController: UICollectionViewDelegate {
         default:
             return
         }
+    }
+}
+
+extension HomeViewController: DetailDelegateCell, TrendingDelegateCell {
+    func didTapTrendingCell(indexPath: IndexPath, collectionView: UICollectionView) {
+        if collectionView == trendingCollectionView {
+            let detailComicVC = DetailComicViewController()
+            detailComicVC.name = viewModel.itemsTrending.value[indexPath.item].name
+            navigationController?.pushViewController(detailComicVC, animated: true)
+        } else {
+            let detailComicVC = DetailComicViewController()
+            detailComicVC.name = viewModel.itemsNewComic.value[indexPath.item].name
+            navigationController?.pushViewController(detailComicVC, animated: true)
+        }
+    }
+    
+    func didTapDetailCell(indexPath: IndexPath) {
+        let detailComicVC = DetailComicViewController()
+        detailComicVC.name = viewModel.itemsDetail.value[indexPath.item].name
+        navigationController?.pushViewController(detailComicVC, animated: true)
     }
 }

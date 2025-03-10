@@ -12,10 +12,18 @@ import RxCocoa
 
 class CategoryViewController: BaseViewController {
     lazy var navigationView = {
-        NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "topic", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
+        NavigationViewFactory.createMainNavigationView(
+            leftImage: UIImage(named: "menu"),
+            title: "topic",
+            right1Image: UIImage(named: "add"),
+            right2Image: UIImage(named: "search"),
+            delegate: self)
 
     }()
-    lazy var categoryCV = CollectionViewFactory.create2ColumCollectionView(scrollDirection: .horizontal, minimumInteritemSpacing: 31, padding: 51, left: 10, right: 10, height: 55)
+    lazy var categoryCV = CollectionViewFactory.create2ColumCollectionView(
+        scrollDirection: .horizontal,
+        minimumInteritemSpacing: 31, padding: 51, left: 10, right: 10, height: 55
+    )
     
     private let viewModel = CategoryViewModel()
     
@@ -28,14 +36,14 @@ class CategoryViewController: BaseViewController {
         categoryCV.snp.makeConstraints { make in
             make.top.equalTo(navigationView.snp.bottom).offset(39)
             make.left.right.equalToSuperview()
-            make.bottom.equalToSuperview().inset(43)
+            make.bottom.equalToSuperview()
         }
         categoryCV.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifier)
         categoryCV.delegate = self
         categoryCV.dataSource = self
     }
     
-    private func bindViewModels() {
+    override func bindState() {
         viewModel.itemsCategory
             .subscribe(onNext: { [weak self] newItems in
                 guard let self = self else {return}
@@ -81,7 +89,8 @@ extension CategoryViewController: UICollectionViewDelegate {
 extension CategoryViewController: CategoryDelegateCell {
     func didTapCell(index: IndexPath) {
         let detailCategoryVC = DetailCategoryViewController()
-        detailCategoryVC.categoryName = viewModel.getNameCategory(indexPath: index)
+        detailCategoryVC.categoryName = viewModel.itemsCategory.value[index.item].name
+        detailCategoryVC.categorySlug = viewModel.itemsCategory.value[index.item].slug
         navigationController?.pushViewController(detailCategoryVC, animated: true)
     }
 }

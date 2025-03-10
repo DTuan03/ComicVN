@@ -8,9 +8,16 @@
 import UIKit
 import SnapKit
 import Cosmos
+import Kingfisher
+
+protocol DetailDelegateCell: AnyObject {
+    func didTapDetailCell(indexPath: IndexPath)
+}
 
 class DetailCollectionViewCell: UICollectionViewCell {
     static let identifier = "DetailCell"
+    weak var delegate: DetailDelegateCell?
+    var indexPath: IndexPath?
     
     let avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleToFill)
     let nameLabel = LabelFactory.createLabel(font: UIFont.medium14, textColor: .black, textAlignment: .left)
@@ -24,12 +31,20 @@ class DetailCollectionViewCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 8
         contentView.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
         setupUI()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        self.addGestureRecognizer(tapGesture)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc func cellTapped() {
+        if let indexPath = indexPath {
+            delegate?.didTapDetailCell(indexPath: indexPath)
+        }
+    }
+ 
     func setupUI() {
         let stackView = [authorLabel, categoryLabel, viewsLabel].vStack(3)
         contentView.addSubviews([avatarImageView, nameLabel, cosmosView, stackView])
@@ -61,10 +76,10 @@ class DetailCollectionViewCell: UICollectionViewCell {
     }
     
     func configData(with detail: DetailModel) {
-        avatarImageView.image = detail.image
+        avatarImageView.kf.setImage(with: detail.image)
         nameLabel.text = detail.name ?? ""
         cosmosView.rating = detail.rating ?? 4
-        authorLabel.text = "Tác giả: \(detail.author ?? "Đang cậo nhật")"
+        authorLabel.text = "Tác giả: \(detail.author ?? "Đang cập nhật")"
         categoryLabel.text = "Thể loại: \(detail.category ?? "Đang cập nhật")"
         viewsLabel.text = "Lượt xem: \(detail.views ?? "0")"
     }

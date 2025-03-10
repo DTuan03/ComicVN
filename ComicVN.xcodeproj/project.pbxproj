@@ -220,6 +220,8 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ComicVN/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Cho phép sử dụng máy ảnh";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Cho phép truy cập thư viện ảnh";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -250,6 +252,8 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ComicVN/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Cho phép sử dụng máy ảnh";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Cho phép truy cập thư viện ảnh";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";

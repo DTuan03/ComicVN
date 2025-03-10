@@ -26,6 +26,7 @@ class ListCell: UICollectionViewCell {
     
     func setupUI() {
         contentView.addSubview(backgroundImage)
+        backgroundImage.isUserInteractionEnabled = true
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }

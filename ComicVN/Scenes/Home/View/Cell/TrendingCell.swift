@@ -7,8 +7,16 @@
 import UIKit
 import SnapKit
 
+protocol TrendingDelegateCell: AnyObject {
+    func didTapTrendingCell(indexPath: IndexPath, collectionView: UICollectionView)
+}
+
 class TrendingCell: UICollectionViewCell {
     static let identifier = "TrendingCell"
+    
+    weak var delegate: TrendingDelegateCell?
+    var indexPath: IndexPath?
+    var collectionView: UICollectionView?
     
     let avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleAspectFill, radius: 10)
     let nameLabel = LabelFactory.createLabel(font: UIFont.medium8, textColor: UIColor(hex: "#FF7B00"), textAlignment: .left)
@@ -21,6 +29,14 @@ class TrendingCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.backgroundColor = UIColor(hex: "#FFFFFF")
         setupUI()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        self.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func cellTapped() {
+        if let indexPath = indexPath {
+            delegate?.didTapTrendingCell(indexPath: indexPath, collectionView: collectionView ?? UICollectionView())
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -46,10 +62,10 @@ class TrendingCell: UICollectionViewCell {
     }
     
     func configData(with detail: DetailModel) {
-        avatarImageView.image = detail.image
+        avatarImageView.kf.setImage(with: detail.image)
         nameLabel.text = detail.name!
         cosmosView.rating = detail.rating ?? 0
-        categoryLabel.text = "Thể loại: \(String(describing: detail.category!))"
-        viewsLabel.text = "Lượt xem: \(String(describing: detail.views!))"
+        categoryLabel.text = "Thể loại: \(detail.category ?? "Đang cập nhật")"
+        viewsLabel.text = "Lượt xem: \(detail.views ?? "Đang cập nhật")"
     }
 }

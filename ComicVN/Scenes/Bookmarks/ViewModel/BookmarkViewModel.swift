@@ -8,18 +8,29 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RealmSwift
 
 class BookmarkViewModel {
     var itemsBookmark = BehaviorRelay<[BookmarkModel]>(value: [])
     
-    init() {
-        let exData = [
-            BookmarkModel(avatar: UIImage.test, name: "Iron Man: Extremis", author: "Warren Ellis", category: "Siêu anh hùng", totalChapter: "24"),
-            BookmarkModel(avatar: UIImage.test, name: "Iron Man: Extremis", author: "Warren Ellis", category: "Siêu anh hùng", totalChapter: "24"),
-            BookmarkModel(avatar: UIImage.test, name: "Iron Man: Extremis", author: "Warren Ellis", category: "Siêu anh hùng", totalChapter: "24"),
-            BookmarkModel(avatar: UIImage.test, name: "Iron Man: Extremis", author: "Warren Ellis", category: "Siêu anh hùng", totalChapter: "24"),
-            BookmarkModel(avatar: UIImage.test, name: "Iron Man: Extremis", author: "Warren Ellis", category: "Siêu anh hùng", totalChapter: "24")
-        ]
-        itemsBookmark.accept(exData)
+    init() {}
+    
+    func getBookmark(userId: String) -> [BookmarkRealmModel] {
+        let predicate = NSPredicate(format: "userId == %@", userId)
+        return RealmHelper.get(BookmarkRealmModel.self, filter: predicate)
+    }
+    
+    func mapAddModelsToBookmarkModels(bookmarkModel: [BookmarkRealmModel]) -> [BookmarkModel] {
+        return bookmarkModel.map { mapAddModelToBookmarkModel(bookmarkModel: $0) }
+    }
+
+    func mapAddModelToBookmarkModel(bookmarkModel: BookmarkRealmModel) -> BookmarkModel {
+        return BookmarkModel(
+            avatar: UIImage(data: bookmarkModel.image ?? Data()) ?? UIImage(),
+            name: bookmarkModel.name ?? "",
+            author: bookmarkModel.author ?? "",
+            category: bookmarkModel.category ?? "",
+            totalChapter: String(bookmarkModel.totalChapter)
+        )
     }
 }

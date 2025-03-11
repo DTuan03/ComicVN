@@ -15,6 +15,7 @@ class ChapterCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -25,7 +26,11 @@ class ChapterCell: UITableViewCell {
         contentView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.left.equalToSuperview().offset(1)
+            make.left.equalToSuperview().offset(10)
         }
+    }
+    
+    func configData(for model: ChapterModel) {
+        titleLabel.text = "\(model.title). Chapter \(model.title)"
     }
 }

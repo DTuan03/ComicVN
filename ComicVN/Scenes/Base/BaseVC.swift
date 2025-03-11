@@ -19,6 +19,7 @@ class BaseViewController: UIViewController {
         addDismissKeyboard()
         setupUI()
         setupEvent()
+        setupData()
         bindState()
     }
     
@@ -26,6 +27,9 @@ class BaseViewController: UIViewController {
     }
     
     func setupEvent() {
+    }
+    
+    func setupData() {
     }
     
     func bindState() {

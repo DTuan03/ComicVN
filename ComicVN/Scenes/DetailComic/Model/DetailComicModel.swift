@@ -35,22 +35,22 @@ class BookmarkRealmModel: Object {
 }
 
 // MARK: - Welcome
-struct WelcomeDetailComic {
+struct WelcomeDetailComic: Codable {
     let status, message: String
     let data: DataClassDetailComic
 }
 
 // MARK: - DataClass
-struct DataClassDetailComic {
+struct DataClassDetailComic: Codable {
     let seoOnPage: SEOOnPageDetailComic
     let breadCrumb: [BreadCrumbDetailComic]
     let params: ParamsDetailComic
-    let item: Item
+    let item: ItemDetailComic
     let APP_DOMAIN_CDN_IMAGE: String
 }
 
 // MARK: - BreadCrumb
-struct BreadCrumbDetailComic {
+struct BreadCrumbDetailComic: Codable {
     let name: String
     let slug: String?
     let position: Int
@@ -58,7 +58,7 @@ struct BreadCrumbDetailComic {
 }
 
 // MARK: - Item
-struct ItemDetailComic {
+struct ItemDetailComic: Codable {
     let _id, name, slug: String?
     let origin_name: [String]?
     let content, status, thumb_url: String?
@@ -70,30 +70,30 @@ struct ItemDetailComic {
 }
 
 // MARK: - Category
-struct CategoryDetailComic {
+struct CategoryDetailComic: Codable {
     let id, name, slug: String
 }
 
 // MARK: - Chapter
-struct ChapterDetailComic {
+struct ChapterDetailComic: Codable {
     let server_name: String
     let server_data: [ServerDataDetailComic]
 }
 
 // MARK: - ServerDatum
-struct ServerDataDetailComic {
+struct ServerDataDetailComic: Codable {
     let filename: String
     let chapter_name, chapter_title: String
     let chapter_api_data: String
 }
 
 // MARK: - Params
-struct ParamsDetailComic {
+struct ParamsDetailComic: Codable {
     let slug, crawl_check_url: String
 }
 
 // MARK: - SEOOnPage
-struct SEOOnPageDetailComic {
+struct SEOOnPageDetailComic: Codable {
     let og_type, titleHead: String
     let seoSchema: SEOSchemaDetailComic?
     let descriptionHead: String
@@ -103,7 +103,7 @@ struct SEOOnPageDetailComic {
 }
 
 // MARK: - SEOSchema
-struct SEOSchemaDetailComic {
+struct SEOSchemaDetailComic: Codable {
     let context: String?
     let type, name: String?
     let url: String?

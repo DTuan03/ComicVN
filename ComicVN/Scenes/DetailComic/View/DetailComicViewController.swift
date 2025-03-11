@@ -7,19 +7,12 @@
 
 import UIKit
 import SnapKit
+import Kingfisher
 
 class DetailComicViewController: BaseViewController {
-    var data: [DescribeModel] = [
-        DescribeModel(title: "Lượt xem", value: "3.123.412"),
-        DescribeModel(title: "Số chương", value: "25"),
-        DescribeModel(title: "Tác giả", value: "Warren Ellis"),
-        DescribeModel(title: "Thể loại", value: "Khoa hoc"),
-        DescribeModel(title: "Trạng thái", value: "Đang cập nhật"),
-        DescribeModel(title: "Tóm tắt", value: "")
-    ]
     var viewModel = DetailComicViewModel()
     let userId = UserDefaults.standard.value(forKey: "userId")
-    var name: String?
+    var slug: String?
     var isSelected: Bool = false
     lazy var backBtn = ButtonFactory.createButton(image: .arrowLeft,
                                                   bgColor: .clear)
@@ -32,25 +25,24 @@ class DetailComicViewController: BaseViewController {
     }()
     
     lazy var image = {
-        let image = ImageViewFactory.createImageView(image: .test,
-                                                     contentMode: .scaleToFill)
+        let image = ImageViewFactory.createImageView(contentMode: .scaleToFill)
         image.layer.cornerRadius = 15
         image.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMaxYCorner]
         image.layer.masksToBounds = true
         return image
     }()
     
-    lazy var titleLabel = LabelFactory.createLabel(text: "Iron Man: Extremis",
-                                                   font: .medium24,
-                                                   textColor: .white)
+    lazy var titleLabel = LabelFactory.createLabel(font: .medium24,
+                                                   textColor: .white,
+                                                   numberOfLines: 2)
     lazy var ratingCosmos = CosmosViewFactory.createCosmosView()
-    lazy var readBtn = ButtonFactory.createButton("Đọc truyện",
+    lazy var readBtn = ButtonFactory.createButton( "Đọc truyện",
                                                   font: .semiBold17,
                                                   textColor: .black,
                                                   bgColor: .white,
                                                   rounded: true)
     
-    lazy var stackView = [[titleLabel, ratingCosmos].vStack(3), readBtn].vStack(60, alignment: .center)
+    lazy var stackView = [[titleLabel, ratingCosmos].vStack(3), readBtn].vStack(50, alignment: .center)
     
     lazy var containerView = {
         let view = UIView()
@@ -129,12 +121,19 @@ class DetailComicViewController: BaseViewController {
         let tableView = UITableView()
         tableView.backgroundColor = .white
         tableView.isScrollEnabled = true
-        tableView.contentInset = UIEdgeInsets(top: 24, left: 11, bottom: 0, right: 11)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(ChapterCell.self, forCellReuseIdentifier: ChapterCell.identifier)
 //        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let slug = slug else {return}
+        viewModel.fetchDetailComic(for: slug)
+        setupData()
+    }
     
     override func setupUI() {
         view.backgroundColor = UIColor(hex: "#EAA2A2")
@@ -199,7 +198,6 @@ class DetailComicViewController: BaseViewController {
             make.height.equalTo(1)
             make.width.equalToSuperview().multipliedBy(0.5)
         }
-        setupUIChapter()
     }
     
     private func setupUIDescription() {
@@ -213,6 +211,7 @@ class DetailComicViewController: BaseViewController {
     
     private func setupUIChapter() {
         containerView.addSubviews([updateLabel, chapterLabel, ivStackView, chapterTableView])
+        containerView.backgroundColor = .white
         updateLabel.snp.makeConstraints { make in
             make.top.equalTo(descriptionBottomLine.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(13)
@@ -223,13 +222,14 @@ class DetailComicViewController: BaseViewController {
             make.left.equalTo(updateLabel.snp.right).offset(8)
             make.height.equalTo(34)
         }
+        ivStackView.backgroundColor = .white
         ivStackView.snp.makeConstraints { make in
             make.top.equalTo(descriptionBottomLine.snp.bottom).offset(8)
             make.right.equalToSuperview().inset(24)
         }
         chapterTableView.snp.makeConstraints { make in
             make.top.equalTo(updateLabel.snp.bottom).offset(10)
-            make.left.right.equalToSuperview()
+            make.left.right.equalToSuperview().inset(11)
             make.bottom.equalToSuperview()
         }
     }
@@ -240,30 +240,70 @@ class DetailComicViewController: BaseViewController {
             navigationController?.popViewController(animated: true)
         })
         .disposed(by: disposeBag)
+        
+        viewModel.itemDetailComics.subscribe(onNext: { [weak self] item in
+            guard let self = self else {return}
+            DispatchQueue.main.async {
+                self.image.kf.setImage(with: item?.image)
+                self.titleLabel.text = item?.name
+                self.descripTableView.reloadData()
+            }
+        })
+        .disposed(by: disposeBag)
+        
+        segmentedControl.rx.selectedSegmentIndex
+            .subscribe(onNext: { [weak self] index in
+                guard let self = self else { return }
+                switch index {
+                case 0:
+                    setupUIDescription()
+                    updateBottomLineSegment(at: 0)
+                    descripTableView.isHidden = false
+                case 1:
+                    setupUIChapter()
+                    updateBottomLineSegment(at: 1)
+                    chapterLabel.text = "Chương \(viewModel.itemDetailComics.value?.chapter.count ?? 0)"
+                    descripTableView.isHidden = true
+                default:
+                    return
+                }
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func updateBottomLineSegment(at index: Int) {
+        switch index {
+        case 0:
+            descriptionBottomLine.backgroundColor = UIColor(hex: "#FF7B00")
+            chapterBottomLine.backgroundColor = .black
+        case 1:
+            descriptionBottomLine.backgroundColor = .black
+            chapterBottomLine.backgroundColor = UIColor(hex: "#FF7B00")
+        default:
+            break
+        }
     }
 }
 
 extension DetailComicViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 6
+        if tableView == descripTableView {
+            return viewModel.itemDetailComics.value?.describe.count ?? 0
         } else {
-            return 1
+            return viewModel.itemDetailComics.value?.chapter.count ?? 0
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: DescribeCell.identifier, for: indexPath) as? DescribeCell else {
-            return UITableViewCell()
-        }
-        if indexPath.section == 0 {
-            cell.setupUISection1()
-            let model = data[indexPath.row]
-            cell.configData(model: model)
+        if tableView == descripTableView {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: DescribeCell.identifier, for: indexPath) as? DescribeCell else {
+                return UITableViewCell()
+            }
+            cell.setupUI(index: indexPath)
+            guard let model = viewModel.itemDetailComics.value?.describe[indexPath.row] else {
+                return UITableViewCell()
+            }
+            cell.configData(index: indexPath, model: model)
             if indexPath.row == 3 {
                 cell.valueLabel.layer.cornerRadius = 17
                 cell.valueLabel.textColor = UIColor(hex: "#6604A1", alpha: 0.5)
@@ -274,15 +314,16 @@ extension DetailComicViewController: UITableViewDataSource {
                     make.width.equalTo(labelWidth + 20)
                 }
             }
+            return cell
         } else {
-            cell.setupUISection2()
-            cell.valueLabel.text = "Phần ngoại truyện Extremis được chuyển thể trong một mini-series truyện tranh chuyển động bao gồm 6 tập có tên. Loạt phim nhỏ được tạo ra bởi Marvel Knights Animation và phát hành trên iTunes vào ngày 16 tháng 4 năm 2010."
-            cell.valueLabel.textAlignment = .left
-            cell.valueLabel.numberOfLines = 0
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: ChapterCell.identifier, for: indexPath) as? ChapterCell else {
+                return UITableViewCell()
+            }
+            guard let model = viewModel.itemDetailComics.value?.chapter[indexPath.row] else {
+                return UITableViewCell()
+            }
+            cell.configData(for: model)
+            return cell
         }
-        
-        return cell
     }
-    
-    
 }

@@ -15,6 +15,8 @@ class DescribeCell: UITableViewCell {
     
     lazy var valueLabel = LabelFactory.createLabel(font: .regular14, textColor: .black, textAlignment: .center)
     
+    lazy var sumaryLabel = LabelFactory.createLabel(font: .regular14, textColor: .black)
+    
     lazy var lineView = {
         let view = UIView()
         view.backgroundColor = UIColor(hex: "#DCDBDB")
@@ -29,8 +31,8 @@ class DescribeCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupUISection1() {
-        contentView.addSubviews([titleLabel, valueLabel])
+    func setupUI(index: IndexPath) {
+        contentView.addSubviews([lineView, titleLabel, valueLabel, sumaryLabel])
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.left.equalToSuperview().offset(24)
@@ -42,26 +44,29 @@ class DescribeCell: UITableViewCell {
             make.left.equalTo(titleLabel.snp.right).offset(40)
             make.height.equalTo(34)
         }
+        if index.row == 6 {
+            lineView.snp.makeConstraints { make in
+                make.top.equalTo(titleLabel.snp.bottom).offset(-36)
+                make.left.equalToSuperview().offset(24)
+                make.height.equalTo(1)
+                make.width.equalTo(208)
+            }
+            sumaryLabel.snp.makeConstraints { make in
+                make.top.equalTo(lineView.snp.bottom).offset(5)
+                make.left.equalToSuperview().offset(24)
+                make.right.equalToSuperview().inset(24)
+                make.bottom.equalToSuperview()
+            }
+        }
+        
     }
     
-    func setupUISection2() {
-        contentView.addSubviews([lineView, valueLabel])
-        lineView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.left.equalToSuperview().offset(24)
-            make.height.equalTo(1)
-            make.width.equalTo(208)
+    func configData(index: IndexPath, model: DescribeModel) {
+        if (index.row == 6) {
+            sumaryLabel.text = model.value
+        } else {
+            titleLabel.text = model.title
+            valueLabel.text = model.value
         }
-        valueLabel.snp.makeConstraints { make in
-            make.top.equalTo(lineView.snp.bottom).offset(5)
-            make.left.equalToSuperview().offset(24)
-            make.right.equalToSuperview().inset(24)
-//            make.height.equalTo(34)
-        }
-    }
-    
-    func configData(model: DescribeModel) {
-        titleLabel.text = model.title
-        valueLabel.text = model.value
     }
 }

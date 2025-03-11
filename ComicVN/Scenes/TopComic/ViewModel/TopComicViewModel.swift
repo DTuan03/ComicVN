@@ -60,7 +60,6 @@ class TopComicViewModel {
         selectedSegment
             .subscribe(onNext: { [weak self] index in
                 guard let self = self else { return }
-                
                 switch index {
                 case 0:
                     self.fetchTopComics(for: "2")

@@ -255,45 +255,45 @@ extension HomeViewController: UICollectionViewDataSource {
 }
 
 extension HomeViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        switch collectionView {
-        case detailCollectionView:
-            let detailComicVC = DetailComicViewController()
-            detailComicVC.name = viewModel.itemsDetail.value[indexPath.item].name
-            navigationController?.pushViewController(detailComicVC, animated: true)
-            return
-        case trendingCollectionView:
-            let detailComicVC = DetailComicViewController()
-            detailComicVC.name = viewModel.itemsTrending.value[indexPath.item].name
-            navigationController?.pushViewController(detailComicVC, animated: true)
-            return
-        case newComicCollectionView:
-            let detailComicVC = DetailComicViewController()
-            detailComicVC.name = viewModel.itemsNewComic.value[indexPath.item].name
-            navigationController?.pushViewController(detailComicVC, animated: true)
-            return
-        default:
-            return
-        }
-    }
+//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        switch collectionView {
+//        case detailCollectionView:
+//            let detailComicVC = DetailComicViewController()
+//            detailComicVC.slug = viewModel.itemsDetail.value[indexPath.item].slug
+//            navigationController?.pushViewController(detailComicVC, animated: true)
+//            return
+//        case trendingCollectionView:
+//            let detailComicVC = DetailComicViewController()
+//            detailComicVC.slug = viewModel.itemsTrending.value[indexPath.item].slug
+//            navigationController?.pushViewController(detailComicVC, animated: true)
+//            return
+//        case newComicCollectionView:
+//            let detailComicVC = DetailComicViewController()
+//            detailComicVC.slug = viewModel.itemsNewComic.value[indexPath.item].slug
+//            navigationController?.pushViewController(detailComicVC, animated: true)
+//            return
+//        default:
+//            return
+//        }
+//    }
 }
 
 extension HomeViewController: DetailDelegateCell, TrendingDelegateCell {
     func didTapTrendingCell(indexPath: IndexPath, collectionView: UICollectionView) {
         if collectionView == trendingCollectionView {
             let detailComicVC = DetailComicViewController()
-            detailComicVC.name = viewModel.itemsTrending.value[indexPath.item].name
+            detailComicVC.slug = viewModel.itemsTrending.value[indexPath.item].slug
             navigationController?.pushViewController(detailComicVC, animated: true)
         } else {
             let detailComicVC = DetailComicViewController()
-            detailComicVC.name = viewModel.itemsNewComic.value[indexPath.item].name
+            detailComicVC.slug = viewModel.itemsNewComic.value[indexPath.item].slug
             navigationController?.pushViewController(detailComicVC, animated: true)
         }
     }
     
     func didTapDetailCell(indexPath: IndexPath) {
         let detailComicVC = DetailComicViewController()
-        detailComicVC.name = viewModel.itemsDetail.value[indexPath.item].name
+        detailComicVC.slug = viewModel.itemsDetail.value[indexPath.item].slug
         navigationController?.pushViewController(detailComicVC, animated: true)
     }
 }

@@ -18,12 +18,13 @@ class TrendingCell: UICollectionViewCell {
     var indexPath: IndexPath?
     var collectionView: UICollectionView?
     
-    let avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleAspectFill, radius: 10)
-    let nameLabel = LabelFactory.createLabel(font: UIFont.medium8, textColor: UIColor(hex: "#FF7B00"), textAlignment: .left)
-    let categoryLabel = LabelFactory.createLabel(font: UIFont.light6, textColor: UIColor(hex: "#434040"), textAlignment: .left)
-    let viewsLabel = LabelFactory.createLabel(font: UIFont.regular6, textColor: UIColor(hex: "#434040"), textAlignment: .left)
-    let cosmosView = CosmosViewFactory.createCosmosView(starSize: 8.5, starMargin: 4)
-
+    lazy var avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleAspectFill, radius: 10)
+    lazy var nameLabel = LabelFactory.createLabel(font: UIFont.medium8, textColor: UIColor(hex: "#FF7B00"), textAlignment: .left)
+    lazy var categoryLabel = LabelFactory.createLabel(font: UIFont.light6, textColor: UIColor(hex: "#434040"), textAlignment: .left)
+    lazy var viewsLabel = LabelFactory.createLabel(font: UIFont.regular6, textColor: UIColor(hex: "#434040"), textAlignment: .left)
+    lazy var cosmosView = CosmosViewFactory.createCosmosView(starSize: 8.5, starMargin: 4)
+    lazy var avatarNameStackView = [avatarImageView, nameLabel].vStack(4, alignment: .fill, distribution: .fill)
+    lazy var infomationStackView = [categoryLabel, cosmosView, viewsLabel].vStack(5)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,16 +45,13 @@ class TrendingCell: UICollectionViewCell {
     }
     
     func setupUI() {
-        let avatarNameStackView = [avatarImageView, nameLabel].vStack(4, alignment: .fill, distribution: .fill)
-        contentView.addSubview(avatarNameStackView)
+        contentView.addSubviews([avatarNameStackView, infomationStackView])
         avatarNameStackView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
             make.width.equalTo(80)
+            make.bottom.equalTo(infomationStackView.snp.top)
             make.height.equalTo(138)
         }
-        
-        let infomationStackView = [categoryLabel, cosmosView, viewsLabel].vStack(5)
-        contentView.addSubview(infomationStackView)
         infomationStackView.snp.makeConstraints { make in
             make.top.equalTo(avatarNameStackView.snp.bottom).offset(8)
             make.left.right.equalToSuperview()

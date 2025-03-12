@@ -17,10 +17,10 @@ class BaseViewController: UIViewController {
         view.backgroundColor = UIColor.white
         self.navigationController?.isNavigationBarHidden = true
         addDismissKeyboard()
+        bindState()
         setupUI()
         setupEvent()
         setupData()
-        bindState()
     }
     
     func setupUI() {

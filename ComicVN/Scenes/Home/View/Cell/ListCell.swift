@@ -7,8 +7,14 @@
 import UIKit
 import SnapKit
 
+protocol ListDelegateCell: AnyObject {
+    func didTapListCell(indexPath: IndexPath)
+}
+
 class ListCell: UICollectionViewCell {
     static let identifier = "ListCell"
+    weak var delegate: ListDelegateCell?
+    var indexPath: IndexPath?
 
     var titleLabel = LabelFactory.createLabel(font: .bold18, textColor: .white, textAlignment: .center)
     var hastagLabel = LabelFactory.createLabel(font: .regular14, textColor: .white, textAlignment: .center)
@@ -18,6 +24,14 @@ class ListCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.layer.cornerRadius = 10
         setupUI()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        self.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func cellTapped() {
+        if let indexPath = indexPath {
+            delegate?.didTapListCell(indexPath: indexPath)
+        }
     }
     
     required init?(coder: NSCoder) {

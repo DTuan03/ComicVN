@@ -14,7 +14,7 @@ protocol DetailDelegateCell: AnyObject {
     func didTapDetailCell(indexPath: IndexPath)
 }
 
-class DetailCollectionViewCell: UICollectionViewCell {
+class DetailCell: UICollectionViewCell {
     static let identifier = "DetailCell"
     weak var delegate: DetailDelegateCell?
     var indexPath: IndexPath?
@@ -53,7 +53,7 @@ class DetailCollectionViewCell: UICollectionViewCell {
             make.left.equalToSuperview().offset(15)
             make.bottom.equalToSuperview().offset(-13)
             make.width.equalTo(90)
-            make.height.equalTo(138)
+//            make.height.equalTo(138)
         }
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(19)

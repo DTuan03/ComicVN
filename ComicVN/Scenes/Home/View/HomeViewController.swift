@@ -16,7 +16,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     lazy var navigationView = {
         NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "home", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
     }()
-    
     let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true,
                                                         bounces: false)
     let contentView = UIView()
@@ -45,15 +44,14 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
                                                                                   padding: 74,
                                                                                   left: 24,
                                                                                   right: 24,
-                                                                                  height: 84)
+                                                                                height: 84)
     override func setupUI() {
-        view.addSubview(navigationView)
+        view.addSubviews([navigationView, scrollView])
         navigationView.snp.makeConstraints{ make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview()
         }
         
-        view.addSubview(scrollView)
         scrollView.delegate = self
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(navigationView.snp.bottom).offset(1)
@@ -69,33 +67,31 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         
         setupDetailCollectionView()
         
-        contentView.addSubview(trendingLabel)
+        contentView.addSubviews([trendingLabel, moreOptionsImage, newComicLabel, moreOptionsnNewImage, categoryLabel])
         trendingLabel.snp.makeConstraints { make in
             make.top.equalTo(detailCollectionView.snp.bottom).offset(20)
             make.left.equalToSuperview().offset(18)
         }
         
-        contentView.addSubview(moreOptionsImage)
         moreOptionsImage.snp.makeConstraints { make in
             make.top.equalTo(detailCollectionView.snp.bottom).offset(30.5)
             make.right.equalToSuperview().offset(-15)
         }
+        
         setupTrendingCollectionView()
         
-        contentView.addSubview(newComicLabel)
         newComicLabel.snp.makeConstraints { make in
             make.top.equalTo(trendingCollectionView.snp.bottom).offset(20)
             make.left.equalToSuperview().offset(18)
         }
-        contentView.addSubview(moreOptionsnNewImage)
+
         moreOptionsnNewImage.snp.makeConstraints { make in
             make.top.equalTo(trendingCollectionView.snp.bottom).offset(30.5)
             make.right.equalToSuperview().offset(-15)
         }
         
         setupNewComicCollectionView()
-        
-        contentView.addSubview(categoryLabel)
+    
         categoryLabel.snp.makeConstraints { make in
             make.top.equalTo(newComicCollectionView.snp.bottom).offset(34)
             make.left.equalToSuperview().offset(16)
@@ -111,7 +107,7 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             make.left.right.equalToSuperview()
             make.height.greaterThanOrEqualTo(200)
         }
-        detailCollectionView.register(DetailCollectionViewCell.self, forCellWithReuseIdentifier: DetailCollectionViewCell.identifier)
+        detailCollectionView.register(DetailCell.self, forCellWithReuseIdentifier: DetailCell.identifier)
         detailCollectionView.dataSource = self
         detailCollectionView.delegate = self
     }
@@ -157,14 +153,14 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     
     override func bindState() {
         viewModel.itemsDetail
-            .subscribe(onNext: { [weak self] newItems in
+            .subscribe(onNext: { [weak self] _ in
                 guard let self = self else {return}
                 self.detailCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
         
         viewModel.itemsTrending
-            .subscribe(onNext: { [weak self] newItems in
+            .subscribe(onNext: { [weak self] _ in
                 guard let self = self else {return}
                 self.trendingCollectionView.reloadData()
             })
@@ -172,14 +168,14 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         
         
         viewModel.itemsNewComic
-            .subscribe(onNext: { [weak self] newItems in
+            .subscribe(onNext: { [weak self] _ in
                 guard let self = self else {return}
                 self.newComicCollectionView.reloadData()
             })
             .disposed(by: disposeBag)
         
         viewModel.itemsCategory
-            .subscribe(onNext: { [weak self] newItems in
+            .subscribe(onNext: { [weak self] _ in
                 guard let self = self else {return}
                 self.categoryCollectionView.reloadData()
             })
@@ -215,7 +211,7 @@ extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         switch collectionView {
         case detailCollectionView:
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailCollectionViewCell.identifier, for: indexPath) as? DetailCollectionViewCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: DetailCell.identifier, for: indexPath) as? DetailCell else {
                 return UICollectionViewCell()
             }
             let model =  viewModel.itemsDetail.value[indexPath.item]
@@ -249,36 +245,17 @@ extension HomeViewController: UICollectionViewDataSource {
             }
             let model =  viewModel.itemsCategory.value[indexPath.item]
             cell.configData(with: model)
+            cell.indexPath = indexPath
+            cell.delegate = self
             return cell
         }
     }
 }
 
 extension HomeViewController: UICollectionViewDelegate {
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        switch collectionView {
-//        case detailCollectionView:
-//            let detailComicVC = DetailComicViewController()
-//            detailComicVC.slug = viewModel.itemsDetail.value[indexPath.item].slug
-//            navigationController?.pushViewController(detailComicVC, animated: true)
-//            return
-//        case trendingCollectionView:
-//            let detailComicVC = DetailComicViewController()
-//            detailComicVC.slug = viewModel.itemsTrending.value[indexPath.item].slug
-//            navigationController?.pushViewController(detailComicVC, animated: true)
-//            return
-//        case newComicCollectionView:
-//            let detailComicVC = DetailComicViewController()
-//            detailComicVC.slug = viewModel.itemsNewComic.value[indexPath.item].slug
-//            navigationController?.pushViewController(detailComicVC, animated: true)
-//            return
-//        default:
-//            return
-//        }
-//    }
 }
 
-extension HomeViewController: DetailDelegateCell, TrendingDelegateCell {
+extension HomeViewController: DetailDelegateCell, TrendingDelegateCell, ListDelegateCell {
     func didTapTrendingCell(indexPath: IndexPath, collectionView: UICollectionView) {
         if collectionView == trendingCollectionView {
             let detailComicVC = DetailComicViewController()
@@ -295,5 +272,30 @@ extension HomeViewController: DetailDelegateCell, TrendingDelegateCell {
         let detailComicVC = DetailComicViewController()
         detailComicVC.slug = viewModel.itemsDetail.value[indexPath.item].slug
         navigationController?.pushViewController(detailComicVC, animated: true)
+    }
+    
+    func didTapListCell(indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            UserDefaults.standard.set(2, forKey: "selectedRowMenu")
+            let topComicVC = TopComicViewController()
+            navigationController?.pushViewController(topComicVC, animated: true)
+        case 1:
+            UserDefaults.standard.set(3, forKey: "selectedRowMenu")
+            let rankingVC = RankingViewController()
+            navigationController?.pushViewController(rankingVC, animated: true)
+        case 2:
+            UserDefaults.standard.set(1, forKey: "selectedRowMenu")
+            let categoryVC = CategoryViewController()
+            navigationController?.pushViewController(categoryVC, animated: true)
+        case 3:
+            UserDefaults.standard.set(4, forKey: "selectedRowMenu")
+            let bookmarkVC = BookmarkViewController()
+            navigationController?.pushViewController(bookmarkVC, animated: true)
+        default:
+            UserDefaults.standard.set(4, forKey: "selectedRowMenu")
+            let bookmarkVC = BookmarkViewController()
+            navigationController?.pushViewController(bookmarkVC, animated: true)
+        }
     }
 }

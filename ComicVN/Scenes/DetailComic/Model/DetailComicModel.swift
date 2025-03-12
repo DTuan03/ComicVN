@@ -22,7 +22,7 @@ struct DescribeModel {
 
 struct ChapterModel {
     var title: String
-    var url: URL
+    var url: String
 }
 
 class BookmarkRealmModel: Object {

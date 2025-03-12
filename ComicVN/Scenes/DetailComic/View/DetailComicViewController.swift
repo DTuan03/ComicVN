@@ -112,7 +112,7 @@ class DetailComicViewController: BaseViewController {
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         tableView.register(DescribeCell.self, forCellReuseIdentifier: DescribeCell.identifier)
-//        tableView.delegate = self
+        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
@@ -123,7 +123,7 @@ class DetailComicViewController: BaseViewController {
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(ChapterCell.self, forCellReuseIdentifier: ChapterCell.identifier)
-//        tableView.delegate = self
+        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
@@ -158,7 +158,7 @@ class DetailComicViewController: BaseViewController {
         }
         
         stackView.snp.makeConstraints { make in
-            make.top.equalTo(backBtn.snp.bottom).offset(40)
+            make.top.equalTo(backBtn.snp.bottom).offset(32)
             make.left.equalTo(image.snp.right).offset(24)
             make.right.equalToSuperview().inset(10)
         }
@@ -322,8 +322,32 @@ extension DetailComicViewController: UITableViewDataSource {
             guard let model = viewModel.itemDetailComics.value?.chapter[indexPath.row] else {
                 return UITableViewCell()
             }
+            cell.indexPath = indexPath
+            cell.delegate = self
             cell.configData(for: model)
             return cell
         }
+    }
+}
+
+extension DetailComicViewController: UITableViewDelegate {
+//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        if tableView == chapterTableView {
+//            print("Selected chapter: \(indexPath.row)")
+//            let readComicVC = ReadComicVC()
+//            readComicVC.chapterUrl = viewModel.itemDetailComics.value?.chapter[indexPath.row].url
+//            navigationController?.pushViewController(readComicVC, animated: true)
+//            print(viewModel.itemDetailComics.value?.chapter[indexPath.row].url ?? "")
+//        } else {
+//            print("Selected chapter: \(indexPath.row)")
+//        }
+//    }
+}
+
+extension DetailComicViewController: ChapterCellDelegate {
+    func didTapChapter(indexPath: IndexPath) {
+        let readComicVC = ReadComicVC()
+        readComicVC.chapterUrl = viewModel.itemDetailComics.value?.chapter[indexPath.row].url
+        navigationController?.pushViewController(readComicVC, animated: true)
     }
 }

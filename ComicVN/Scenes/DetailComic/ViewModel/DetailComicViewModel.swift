@@ -57,7 +57,7 @@ class DetailComicViewModel {
         return chapters.flatMap { chapterDetail in
             return chapterDetail.server_data.map { serverData in
                 return ChapterModel(title: serverData.chapter_name,
-                                    url: URL(string: serverData.chapter_api_data)!)
+                                    url: serverData.chapter_api_data)
             }
         }
     }

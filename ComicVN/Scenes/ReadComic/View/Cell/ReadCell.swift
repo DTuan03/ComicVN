@@ -12,8 +12,7 @@ import Kingfisher
 class ReadCell: UICollectionViewCell {
     static let identifier = "ReadCell"
     
-    let imageView = ImageViewFactory.createImageView(contentMode: .scaleToFill)
-    
+    let imageView = ImageViewFactory.createImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,7 +30,8 @@ class ReadCell: UICollectionViewCell {
         }
     }
     
-//    func configData(with detail: ) {
-//        imageView.kf.setImage(with: detail.image)
-//    }
+    func configData(at indexPath: IndexPath, with read: ReadComicModel) {
+        let url = URL(string: read.image[indexPath.row])
+        imageView.kf.setImage(with: url)
+    }
 }

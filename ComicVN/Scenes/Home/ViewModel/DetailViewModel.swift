@@ -30,7 +30,7 @@ class DetailViewModel {
     
     func featchDetail() {
         DispatchQueue.main.async {
-            APIHelper.fetchData(urlString: "https://otruyenapi.com/v1/api/home", method: "GET", parameters: nil) { (result: Result<WelcomeHome, Error>) in
+            APIHelper.fetchData(urlString: "https://otruyenapi.com/v1/api/danh-sach/truyen-moi?page=2", method: "GET", parameters: nil) { (result: Result<WelcomeHome, Error>) in
                 switch result {
                 case .success(let response):
                     let items = self.mapItemsToDetailModels(itemModels: response.data.items)

@@ -1,22 +1,28 @@
 //
-//  BookmarksCell.swift
+//  ResultCell.swift
 //  ComicVN
 //
-//  Created by Tuấn on 2/3/25.
+//  Created by Tuấn on 12/3/25.
 //
-
-
 import UIKit
 import SnapKit
 import Cosmos
+import Kingfisher
 
-class BookmarkCell: UITableViewCell {
-    static let identifier = "BookmarkCell"
+protocol ResultDelegateCell: AnyObject {
+    func didResultTapCell(indexPath: IndexPath)
+}
+
+class ResultCell: UITableViewCell {
+    static let identifier = "ResultCell"
+    weak var delegate: ResultDelegateCell?
+    var indexPath: IndexPath?
     
     let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         view.layer.cornerRadius = 6
+        view.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
         return view
     }()
     
@@ -34,8 +40,15 @@ class BookmarkCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        containerView.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
         setupUI()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        self.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc func cellTapped() {
+        if let indexPath = indexPath {
+            delegate?.didResultTapCell(indexPath: indexPath)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -84,7 +97,6 @@ class BookmarkCell: UITableViewCell {
         
         totalChapterLabel.snp.makeConstraints { make in
             make.left.equalTo(avartaImageView.snp.right).offset(25)
-//            make.right.equalToSuperview()
             make.top.equalTo(categoryLabel.snp.bottom).offset(2)
             make.height.equalTo(18)
         }
@@ -96,11 +108,12 @@ class BookmarkCell: UITableViewCell {
         }
     }
     
-    func configData(with model: BookmarkModel) {
-        avartaImageView.image = model.avatar
+    func configData(with model: SearchModel) {
+        let url = URL(string: model.avatar ?? "")
+        avartaImageView.kf.setImage(with: url)
         nameLabel.text = model.name
-        authorLabel.text = "Tác giả: \(model.author)"
-        categoryLabel.text = "Thể loại: \(model.category)"
-        totalChapterLabel.text = "Tổng số chương: \(model.totalChapter)"
+        authorLabel.text = "Tác giả: \(model.author ?? "Đang cập nhật")"
+        categoryLabel.text = "Thể loại: \(model.category ?? "Đang cập nhật")"
+        totalChapterLabel.text = "Tổng số chương: \(model.totalChapter ?? "Đang cập nhật")"
     }
 }

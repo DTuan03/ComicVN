@@ -14,6 +14,10 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
     func didTapLeftButton(in view: UIView) {
         navigationController?.popViewController(animated: true)
     }
+    func didTapRightSearchButton(in view: UIView) {
+        let searchVC = SearchViewController()
+        navigationController?.pushViewController(searchVC, animated: true)
+    }
     
     func didTapRightAddButton(in view: UIView) {
         let addVC = AddViewController()
@@ -35,8 +39,7 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
         let textField = TextFieldFactory.createTextField(placeholder: "name",
                                                          font: .medium18,
                                                          textAlignment: .left,
-                                                         rounded: true,
-                                                         height: 48)
+                                                         rounded: true)
         textField.imageLeftView(image: "", placeholder: "email")
         return textField
     }()
@@ -44,8 +47,7 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
     lazy var emailTextField: UITextField = {
         let textField = TextFieldFactory.createTextField(placeholder: "email",
                                                          font: .medium18,
-                                                         rounded: true,
-                                                         height: 48)
+                                                         rounded: true)
         textField.imageLeftView(image: "", placeholder: "email")
         return textField
     }()
@@ -53,8 +55,7 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
        let textField = TextFieldFactory.createTextField(placeholder: "password",
                                                         font: .medium18,
                                                         textAlignment: .left,
-                                                        rounded: true,
-                                                        height: 48)
+                                                        rounded: true)
         textField.imageLeftView(image: "", placeholder: "passWord")
         textField.imageRightView(image: "eyes", placeholder: "")
         return textField
@@ -118,6 +119,18 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
         stackViewTextField.snp.makeConstraints { make in
             make.top.equalTo(logoImageView.snp.bottom).offset(48)
             make.left.right.equalToSuperview().inset(32)
+        }
+        
+        nameTextField.snp.makeConstraints { make in
+            make.height.equalTo(48)
+        }
+        
+        emailTextField.snp.makeConstraints { make in
+            make.height.equalTo(48)
+        }
+        
+        passTextField.snp.makeConstraints { make in
+            make.height.equalTo(48)
         }
         
         signUpButton.snp.makeConstraints { make in

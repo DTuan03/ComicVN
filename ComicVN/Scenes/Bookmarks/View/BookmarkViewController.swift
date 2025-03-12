@@ -109,6 +109,11 @@ extension BookmarkViewController: NavigationViewDelegate {
         menuVC.modalPresentationStyle = .overFullScreen
         self.present(menuVC, animated: false, completion: nil)
     }
+    
+    func didTapRightSearchButton(in view: UIView) {
+        let searchVC = SearchViewController()
+        navigationController?.pushViewController(searchVC, animated: true)
+    }
 }
 
 
@@ -123,7 +128,6 @@ extension BookmarkViewController: UITableViewDataSource {
         }
         
         let model = viewModel.itemsBookmark.value[indexPath.row]
-        cell.containerView.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
         cell.configData(with: model)
         return cell
     }

@@ -19,6 +19,11 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
         navigationController?.popViewController(animated: true)
     }
     
+    func didTapRightSearchButton(in view: UIView) {
+        let searchVC = SearchViewController()
+        navigationController?.pushViewController(searchVC, animated: true)
+    }
+    
     let viewModel = AddViewModel()
     
     lazy var navigationView = {
@@ -38,8 +43,7 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
     lazy var nameTextField = {
         let tf = TextFieldFactory.createTextField(placeholder: "Nhập tên truyện",
                                                   font: .medium14,
-                                                  rounded: true,
-                                                  height: 48)
+                                                  rounded: true)
         tf.imageLeftView(image: "")
         return tf
     }()
@@ -47,8 +51,7 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
     lazy var authorTextField = {
         let tf = TextFieldFactory.createTextField(placeholder: "Nhập tên tác giả",
                                                   font: .medium14,
-                                                  rounded: true,
-                                                  height: 48)
+                                                  rounded: true)
         tf.imageLeftView(image: "")
         return tf
     }()
@@ -56,8 +59,7 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
     lazy var categoryTextField = {
         let tf = TextFieldFactory.createTextField(placeholder: "Thể loại",
                                                   font: .medium14,
-                                                  rounded: true,
-                                                  height: 48)
+                                                  rounded: true)
         tf.imageLeftView(image: "")
         return tf
     }()
@@ -65,8 +67,7 @@ class AddViewController: BaseViewController, NavigationViewDelegate {
     lazy var chapterTextField = {
         let tf = TextFieldFactory.createTextField(placeholder: "Tổng số chương",
                                                   font: .medium14,
-                                                  rounded: true,
-                                                  height: 48)
+                                                  rounded: true)
         tf.imageLeftView(image: "")
         tf.keyboardType = .numberPad
         return tf

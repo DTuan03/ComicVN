@@ -79,6 +79,11 @@ extension RankingViewController: NavigationViewDelegate {
         let addVC = AddViewController()
         navigationController?.pushViewController(addVC, animated: true)
     }
+    
+    func didTapRightSearchButton(in view: UIView) {
+        let searchVC = SearchViewController()
+        navigationController?.pushViewController(searchVC, animated: true)
+    }
 }
 
 extension RankingViewController: UITableViewDataSource {

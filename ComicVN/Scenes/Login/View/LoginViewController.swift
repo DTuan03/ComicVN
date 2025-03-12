@@ -19,15 +19,14 @@ class LoginViewController: BaseViewController {
     lazy var emailTextField: UITextField = {
         let textField = TextFieldFactory.createTextField(placeholder: "email",
                                                          font: .medium18,
-                                                         rounded: true, height: 48)
+                                                         rounded: true)
         textField.imageLeftView(image: "", placeholder: "email")
         return textField
     }()
     lazy var passTextField: UITextField = {
         let textField = TextFieldFactory.createTextField(placeholder: "password",
                                                          font: .medium18,
-                                                         rounded: true,
-                                                         height: 48)
+                                                         rounded: true)
         textField.imageLeftView(image: "", placeholder: "passWord")
         textField.imageRightView(image: "eyes", placeholder: "")
         return textField
@@ -83,6 +82,13 @@ class LoginViewController: BaseViewController {
         stackViewTextField.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(60.14)
             make.left.right.equalToSuperview().inset(33)
+        }
+        
+        emailTextField.snp.makeConstraints { make in
+            make.height.equalTo(48)
+        }
+        passTextField.snp.makeConstraints { make in
+            make.height.equalTo(48)
         }
         view.addSubview(loginButton)
         loginButton.snp.makeConstraints { make in

@@ -139,7 +139,7 @@ class DetailComicViewController: BaseViewController {
             followBtn.setImage(.follow, for: .normal)
             isSelected = false
         }
-        setupEvent()
+//        setupEvent()
     }
     
     override func setupUI() {

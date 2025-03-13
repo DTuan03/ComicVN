@@ -47,7 +47,7 @@ class DescribeCell: UITableViewCell {
         }
         if index.row == 6 {
             lineView.snp.makeConstraints { make in
-                make.top.equalTo(titleLabel.snp.bottom).offset(-36)
+                make.top.equalTo(titleLabel.snp.bottom).offset(-32)
                 make.left.equalToSuperview().offset(24)
                 make.height.equalTo(1)
                 make.width.equalTo(208)

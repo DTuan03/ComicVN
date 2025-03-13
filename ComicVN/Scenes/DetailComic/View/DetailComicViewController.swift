@@ -360,7 +360,7 @@ extension DetailComicViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             cell.configData(index: indexPath, model: model)
-            if indexPath.row == 3 {
+            if cell.titleLabel.text == "Thể loại" {
                 cell.valueLabel.layer.cornerRadius = 17
                 cell.valueLabel.textColor = UIColor(hex: "#6604A1", alpha: 0.5)
                 cell.valueLabel.layer.borderColor = UIColor(hex: "#6604A1", alpha: 0.5).cgColor

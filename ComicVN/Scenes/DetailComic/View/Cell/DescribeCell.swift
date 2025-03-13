@@ -25,6 +25,7 @@ class DescribeCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = UIColor.white
     }
     
     required init?(coder: NSCoder) {
@@ -58,7 +59,6 @@ class DescribeCell: UITableViewCell {
                 make.bottom.equalToSuperview()
             }
         }
-        
     }
     
     func configData(index: IndexPath, model: DescribeModel) {

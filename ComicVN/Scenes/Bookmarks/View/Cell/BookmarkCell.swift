@@ -9,25 +9,32 @@
 import UIKit
 import SnapKit
 import Cosmos
+import Kingfisher
+
+protocol BookmarkDelegateCell: AnyObject {
+    func didTapBookmarkCell(indexPath: IndexPath)
+}
 
 class BookmarkCell: UITableViewCell {
     static let identifier = "BookmarkCell"
+    weak var delegate: BookmarkDelegateCell?
+    var indexPath: IndexPath?
     
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .backgroundColor
         view.layer.cornerRadius = 6
         return view
     }()
     
     lazy var avartaImageView = ImageViewFactory.createImageView()
-    lazy var nameLabel = LabelFactory.createLabel(font: .medium14, textColor: .black, textAlignment: .left)
-    lazy var authorLabel = LabelFactory.createLabel(font: .regular12, textColor: .black, textAlignment: .left)
-    lazy var categoryLabel = LabelFactory.createLabel(font: .regular12, textColor: .black, textAlignment: .left)
-    lazy var totalChapterLabel = LabelFactory.createLabel(font: .medium11, textColor: .black, textAlignment: .center)
+    lazy var nameLabel = LabelFactory.createLabel(font: .medium14, textColor: .textPrimaryColor, textAlignment: .left)
+    lazy var authorLabel = LabelFactory.createLabel(font: .regular12, textColor: .textPrimaryColor, textAlignment: .left)
+    lazy var categoryLabel = LabelFactory.createLabel(font: .regular12, textColor: .textPrimaryColor, textAlignment: .left)
+    lazy var totalChapterLabel = LabelFactory.createLabel(font: .medium11, textColor: .textPrimaryColor, textAlignment: .center)
     lazy var paddingView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         
         return view
     }()
@@ -36,15 +43,18 @@ class BookmarkCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         containerView.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
         setupUI()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        self.addGestureRecognizer(tapGesture)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
+    @objc func cellTapped() {
+        if let indexPath = indexPath {
+            delegate?.didTapBookmarkCell(indexPath: indexPath)
+        }
     }
     
     private func setupUI() {
@@ -97,7 +107,8 @@ class BookmarkCell: UITableViewCell {
     }
     
     func configData(with model: BookmarkModel) {
-        avartaImageView.image = model.avatar
+        let url = URL(string: model.avatar)
+        avartaImageView.kf.setImage(with: url)
         nameLabel.text = model.name
         authorLabel.text = "Tác giả: \(model.author)"
         categoryLabel.text = "Thể loại: \(model.category)"

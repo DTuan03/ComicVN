@@ -27,7 +27,7 @@ class CategoryCell: UICollectionViewCell {
     lazy var nameLabel = LabelFactory.createLabel(font: .medium18,
                                                   textAlignment: .center)
     lazy var numberLabel = LabelFactory.createLabel(font: .medium12,
-                                                    textColor: UIColor(hex: "#434040"),
+                                                    textColor: .textSecondaryColor,
                                                     textAlignment: .center)
     let view: UIView = {
         let view = UIView()

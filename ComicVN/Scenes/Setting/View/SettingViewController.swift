@@ -28,6 +28,7 @@ class SettingViewController: BaseViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.separatorStyle = .none
         tableView.isScrollEnabled = false
+        tableView.backgroundColor = .backgroundColor
         return tableView
     }()
     
@@ -43,7 +44,6 @@ class SettingViewController: BaseViewController {
     
     override func setupUI() {
         view.addSubviews([navigationView, tableView, logoutBtn])
-        
         navigationView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview()
@@ -128,7 +128,11 @@ extension SettingViewController: UITableViewDataSource {
 
     private func createSwitch() -> UISwitch {
         let themeSwitch = UISwitch()
-        themeSwitch.isOn = false
+        if let savedStyle = UserDefaults.standard.value(forKey: "darkModeEnabled") as? Int {
+            themeSwitch.isOn = (savedStyle == UIUserInterfaceStyle.dark.rawValue)
+        } else {
+            themeSwitch.isOn = false
+        }
         themeSwitch.onTintColor = UIColor(hex: "#FF7B00")
         themeSwitch.thumbTintColor = .white
         themeSwitch.addTarget(self, action: #selector(darkModeChanged(_:)), for: .valueChanged)
@@ -157,19 +161,22 @@ extension SettingViewController: UITableViewDataSource {
         }
     }
 
-
+// MARK: Chế độ tối
     @objc private func darkModeChanged(_ sender: UISwitch) {
-        print("Chế độ tối: \(sender.isOn)")
+        let newStyle: UIUserInterfaceStyle = sender.isOn ? .dark : .light
+        
+        view.window?.overrideUserInterfaceStyle = newStyle
+        UserDefaults.standard.set(newStyle.rawValue, forKey: "darkModeEnabled")
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView = UIView()
-        headerView.backgroundColor = UIColor.white
+        headerView.backgroundColor = .backgroundColor
 
         let titleLabel = UILabel()
         titleLabel.text = settingsSections[section]
         titleLabel.font = UIFont.semiBold18
-        titleLabel.textColor = UIColor.black
+        titleLabel.textColor = .textPrimaryColor
 
         headerView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in

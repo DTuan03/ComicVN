@@ -31,6 +31,7 @@ class RankingViewController: BaseViewController {
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+        tableView.backgroundColor = .backgroundColor
         tableView.delegate = self
         tableView.dataSource = self
         

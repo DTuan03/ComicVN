@@ -12,6 +12,7 @@ import RealmSwift
 
 class SearchViewModel {
     let itemsSearch = BehaviorRelay<[SearchModel]>(value: [])
+    let itemFilter = BehaviorRelay<[FilterModel]>(value: [])
     private let disposeBag = DisposeBag()
     
     func fetchItems(for value: String) {
@@ -22,8 +23,10 @@ class SearchViewModel {
                 switch result {
                 case .success(let response):
                     let items = self.mapItemsToSearchModels(itemModels: response.data.items)
+                    let category = self.filter(items: items)
                     DispatchQueue.main.async {
                         self.itemsSearch.accept(items)
+                        self.itemFilter.accept(category)
                     }
                 case .failure(let error):
                     print("Lỗi khi gọi API: \(error.localizedDescription)")
@@ -40,7 +43,6 @@ class SearchViewModel {
             category: itemsModel.category[0].name,
             totalChapter: String(itemsModel.chapters[0].server_data.count),
             slug: itemsModel.slug
-            
         )
     }
 
@@ -48,5 +50,8 @@ class SearchViewModel {
         return itemModels.map { mapItemToSearchModel(itemsModel: $0) }
     }
     
-    
+    func filter(items: [SearchModel]) -> [FilterModel] {
+        let categories = Set(items.map { $0.category })
+        return categories.map { FilterModel(category: $0) }
+    }
 }

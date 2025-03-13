@@ -32,7 +32,7 @@ class DetailComicViewModel {
     }
     
     func mapItemToDetailComicModel(itemModel: ItemDetailComic) -> DetailComicModel {
-        let urlImage = URL(string: "https://img.otruyenapi.com/uploads/comics/" + (itemModel.thumb_url ?? ""))
+        let urlImage = "https://img.otruyenapi.com/uploads/comics/" + (itemModel.thumb_url ?? "")
         let describe: [DescribeModel] = [
             .init(title: "Lượt xem", value: "Đang cập nhật"),
             .init(title: "Số chương", value: String(itemModel.chapters?[0].server_data.count ?? 0)),
@@ -52,7 +52,7 @@ class DetailComicViewModel {
         )
     }
     
-    func createChapterModels(from itemsModel: ItemDetailComic) -> [ChapterModel]? {
+    private func createChapterModels(from itemsModel: ItemDetailComic) -> [ChapterModel]? {
         guard let chapters = itemsModel.chapters else { return nil }
         return chapters.flatMap { chapterDetail in
             return chapterDetail.server_data.map { serverData in
@@ -62,4 +62,38 @@ class DetailComicViewModel {
         }
     }
     
+    func checkedBookmark(userId: String, slug: String) -> Bool {
+        let predicate = NSPredicate(format: "userId == %@ AND slug == %@", userId, slug)
+        let comic = RealmHelper.getOne(BookmarkRealmModel.self, filter: predicate)
+        if comic != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func sortDescChapter() {
+        if let sortedChapters = itemDetailComics.value?.chapter.sorted(by: { (Double($0.title) ?? 0.0) > (Double($1.title) ?? 0.0) }) {
+            var updatedComic = itemDetailComics.value
+            updatedComic?.chapter = sortedChapters
+            self.itemDetailComics.accept(updatedComic)
+        }
+    }
+    
+    func sortAscChapter() {
+        if let sortedChapters = itemDetailComics.value?.chapter.sorted(by: { (Double($0.title) ?? 0.0) < (Double($1.title) ?? 0.0) }) {
+            var updatedComic = itemDetailComics.value
+            updatedComic?.chapter = sortedChapters
+            self.itemDetailComics.accept(updatedComic)
+        }
+    }
+    
+    func saveBookmarkComic(for model: BookmarkRealmModel) {
+        RealmHelper.set(model)
+    }
+    
+    func deleteBookmarkComic(userId: String, slug: String) {
+        let predicate = NSPredicate(format: "userId == %@ AND slug == %@", userId, slug)
+        RealmHelper.remove(BookmarkRealmModel.self, filter: predicate)
+    }
 }

@@ -47,7 +47,8 @@ class TopComicViewModel {
             rating: 4,
             author: "Đang cập nhật",
             category: itemsModel.category?[0].name ?? "Đang cập nhật",
-            views: "Đang cập nhật"
+            views: "Đang cập nhật",
+            slug: itemsModel.slug
         )
     }
     

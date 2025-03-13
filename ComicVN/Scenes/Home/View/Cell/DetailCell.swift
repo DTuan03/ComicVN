@@ -20,16 +20,16 @@ class DetailCell: UICollectionViewCell {
     var indexPath: IndexPath?
     
     let avatarImageView = ImageViewFactory.createImageView(contentMode: .scaleToFill)
-    let nameLabel = LabelFactory.createLabel(font: UIFont.medium14, textColor: .black, textAlignment: .left)
-    let authorLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .black, textAlignment: .left)
-    let categoryLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .black, textAlignment: .left)
-    let viewsLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .black, textAlignment: .left)
+    let nameLabel = LabelFactory.createLabel(font: UIFont.medium14, textColor: .textPrimaryColor, textAlignment: .left)
+    let authorLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .textPrimaryColor, textAlignment: .left)
+    let categoryLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .textPrimaryColor, textAlignment: .left)
+    let viewsLabel = LabelFactory.createLabel(font: UIFont.regular12, textColor: .textPrimaryColor, textAlignment: .left)
     let cosmosView = CosmosViewFactory.createCosmosView(starSize: 16, starMargin: 4)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.layer.cornerRadius = 8
-        contentView.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
+        contentView.backgroundColor = .backgroundSecondaryColor
         setupUI()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
         self.addGestureRecognizer(tapGesture)
@@ -53,8 +53,8 @@ class DetailCell: UICollectionViewCell {
             make.left.equalToSuperview().offset(15)
             make.bottom.equalToSuperview().offset(-13)
             make.width.equalTo(90)
-//            make.height.equalTo(138)
         }
+        
         nameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(19)
             make.left.equalTo(avatarImageView.snp.right).offset(17)

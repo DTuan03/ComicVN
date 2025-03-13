@@ -13,6 +13,7 @@ struct InfoComicModel {
     let author: String?
     let category: String?
     let views: String?
+    let slug: String?
 }
 
 // MARK: - Welcome

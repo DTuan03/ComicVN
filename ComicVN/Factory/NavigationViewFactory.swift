@@ -51,7 +51,7 @@ class NavigationViewFactory {
         }
         
         if let title = title {
-            let titleLabel = LabelFactory.createLabel(text: title, font: UIFont.bold18, textColor: .black, textAlignment: .center)
+            let titleLabel = LabelFactory.createLabel(text: title, font: UIFont.bold18, textColor: .textPrimaryColor, textAlignment: .center)
             view.addSubview(titleLabel)
             titleLabel.snp.makeConstraints { make in
                 make.center.equalToSuperview()

@@ -8,11 +8,11 @@ import UIKit
 import RealmSwift
 
 struct DetailComicModel {
-    let image: URL?
+    let image: String?
     let name: String?
     let rating: Double?
     let describe: [DescribeModel]
-    let chapter: [ChapterModel]
+    var chapter: [ChapterModel]
 }
 
 struct DescribeModel {
@@ -27,11 +27,12 @@ struct ChapterModel {
 
 class BookmarkRealmModel: Object {
     @objc dynamic var userId: String?
-    @objc dynamic var image: Data?
+    @objc dynamic var image: String?
     @objc dynamic var name: String?
     @objc dynamic var author: String?
     @objc dynamic var category: String?
-    @objc dynamic var totalChapter: Int = 0
+    @objc dynamic var totalChapter: String?
+    @objc dynamic var slug: String?
 }
 
 // MARK: - Welcome

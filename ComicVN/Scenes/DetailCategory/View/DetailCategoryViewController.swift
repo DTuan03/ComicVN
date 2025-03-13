@@ -22,10 +22,10 @@ class DetailCategoryViewController: BaseViewController {
         let tableView = UITableView()
         tableView.register(InfoComicCell.self, forCellReuseIdentifier: InfoComicCell.identifier)
         tableView.separatorStyle = .none
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = .backgroundColor
         tableView.isScrollEnabled = true
+        tableView.showsVerticalScrollIndicator = false
         tableView.contentInset = UIEdgeInsets(top: 38, left: 0, bottom: 0, right: 0)
-        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
@@ -88,10 +88,17 @@ extension DetailCategoryViewController: UITableViewDataSource {
         }
         let model = viewModel.itemsInfoComic.value[indexPath.item]
         cell.configData(with: model)
+        cell.indexPath = indexPath
+        cell.delegate = self
         return cell
     }
 }
 
-extension DetailCategoryViewController: UITableViewDelegate {
+extension DetailCategoryViewController: InfoComicDelegateCell {
+    func didTapInfoComicCell(indexPath: IndexPath) {
+        let detailComicVC = DetailComicViewController()
+        detailComicVC.slug = viewModel.itemsInfoComic.value[indexPath.row].slug
+        navigationController?.pushViewController(detailComicVC, animated: true)
+    }
     
 }

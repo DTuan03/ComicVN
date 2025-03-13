@@ -64,11 +64,10 @@ class MenuViewController: UIViewController {
     
     private lazy var readIcon = ImageViewFactory.createImageView(image: UIImage(named: "smart"))
     private lazy var savedIcon = ImageViewFactory.createImageView(image: UIImage(named: "reading"))
-    private lazy var readLabel = LabelFactory.createLabel(text: "10",
+    private lazy var readLabel = LabelFactory.createLabel(text: "0",
                                                           font: .regular16,
                                                           textColor: .black)
-    private lazy var savedLabel = LabelFactory.createLabel(text: "102",
-                                                           font: .regular16,
+    private lazy var savedLabel = LabelFactory.createLabel(font: .regular16,
                                                            textColor: .black)
     
     private lazy var readButton: UIButton = {
@@ -115,6 +114,11 @@ class MenuViewController: UIViewController {
     lazy var stackView = [readView, savedView].hStack(0, distribution: .fillEqually)
 
     // MARK: - Lifecycle
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        savedLabel.text = String(viewModel.countComicSaved())
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()

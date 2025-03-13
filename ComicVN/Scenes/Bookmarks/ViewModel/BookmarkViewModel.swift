@@ -26,11 +26,17 @@ class BookmarkViewModel {
 
     func mapAddModelToBookmarkModel(bookmarkModel: BookmarkRealmModel) -> BookmarkModel {
         return BookmarkModel(
-            avatar: UIImage(data: bookmarkModel.image ?? Data()) ?? UIImage(),
+            avatar: bookmarkModel.image ?? "",
             name: bookmarkModel.name ?? "",
             author: bookmarkModel.author ?? "",
             category: bookmarkModel.category ?? "",
-            totalChapter: String(bookmarkModel.totalChapter)
+            totalChapter: String(bookmarkModel.totalChapter ?? ""),
+            slug: bookmarkModel.slug ?? ""
+            
         )
+    }
+    
+    func deleteAllComic() {
+        RealmHelper.removeAll(BookmarkRealmModel.self)
     }
 }

@@ -20,21 +20,19 @@ class ResultCell: UITableViewCell {
     
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
         view.layer.cornerRadius = 6
-        view.backgroundColor = UIColor(hex: "#FF7B00", alpha: 0.11)
+        view.backgroundColor = .backgroundSecondaryColor
         return view
     }()
     
     lazy var avartaImageView = ImageViewFactory.createImageView()
-    lazy var nameLabel = LabelFactory.createLabel(font: .medium14, textColor: .black, textAlignment: .left)
-    lazy var authorLabel = LabelFactory.createLabel(font: .regular12, textColor: .black, textAlignment: .left)
-    lazy var categoryLabel = LabelFactory.createLabel(font: .regular12, textColor: .black, textAlignment: .left)
-    lazy var totalChapterLabel = LabelFactory.createLabel(font: .medium11, textColor: .black, textAlignment: .center)
+    lazy var nameLabel = LabelFactory.createLabel(font: .medium14, textColor: .textPrimaryColor, textAlignment: .left)
+    lazy var authorLabel = LabelFactory.createLabel(font: .regular12, textColor: .textPrimaryColor, textAlignment: .left)
+    lazy var categoryLabel = LabelFactory.createLabel(font: .regular12, textColor: .textPrimaryColor, textAlignment: .left)
+    lazy var totalChapterLabel = LabelFactory.createLabel(font: .medium11, textColor: .textPrimaryColor, textAlignment: .center)
     lazy var paddingView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
-        
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -53,11 +51,6 @@ class ResultCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
     }
     
     private func setupUI() {

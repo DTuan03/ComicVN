@@ -10,25 +10,31 @@ import SnapKit
 import Cosmos
 import Kingfisher
 
+protocol TopComicDelegateCell: AnyObject {
+    func didTapTopComicCell(indexPath: IndexPath)
+}
+
 class TopComicCell: UITableViewCell {
     static let identifier = "TopComicCell"
+    weak var delegate: TopComicDelegateCell?
+    var indexPath: IndexPath?
     
     let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .backgroundColor
         view.layer.cornerRadius = 6
         return view
     }()
     
     lazy var avartaImageView = ImageViewFactory.createImageView(contentMode: .scaleAspectFill)
-    lazy var nameLabel = LabelFactory.createLabel(font: .medium14, textColor: .black, textAlignment: .left)
+    lazy var nameLabel = LabelFactory.createLabel(font: .medium14, textColor: .textPrimaryColor, textAlignment: .left)
     lazy var cosmos = CosmosViewFactory.createCosmosView()
-    lazy var authorLabel = LabelFactory.createLabel(font: .regular12, textColor: .black, textAlignment: .left)
-    lazy var categoryLabel = LabelFactory.createLabel(font: .regular12, textColor: .black, textAlignment: .left)
+    lazy var authorLabel = LabelFactory.createLabel(font: .regular12, textColor: .textPrimaryColor, textAlignment: .left)
+    lazy var categoryLabel = LabelFactory.createLabel(font: .regular12, textColor: .textPrimaryColor, textAlignment: .left)
     lazy var viewsLabel = LabelFactory.createLabel(font: .medium11, textColor: .white, textAlignment: .center)
     lazy var paddingView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .clear
         
         return view
     }()
@@ -36,20 +42,22 @@ class TopComicCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
+        self.addGestureRecognizer(tapGesture)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-//        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0))
-//        containerView.frame = containerView.frame.inset(by: UIEdgeInsets(top: 0, left: 0, bottom: 44, right: 0))
+    @objc func cellTapped() {
+        if let indexPath = indexPath {
+            delegate?.didTapTopComicCell(indexPath: indexPath)
+        }
     }
     
     private func setupUI() {
+        containerView.backgroundColor = .backgroundColor
         contentView.addSubviews([containerView, paddingView])
         containerView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()

@@ -17,6 +17,7 @@ class ImageViewFactory {
         }
         iv.layer.cornerRadius = radius
         iv.clipsToBounds = true
+        iv.isUserInteractionEnabled = true 
 
         return iv
     }

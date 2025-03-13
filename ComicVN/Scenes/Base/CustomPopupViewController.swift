@@ -19,21 +19,21 @@ class CustomPopupViewController: UIViewController {
     
     let titleLabel = LabelFactory.createLabel(text: "Xoá Bookmarks",
                                               font: .bold16,
-                                              textColor: .black)
+                                              textColor: .textPrimaryColor)
     let messageLabel = LabelFactory.createLabel(text: "Bạn có chắc chắn xóa toàn bộ Bookmarks chứ, hành động này không thể hoàn tác",
                                                 font: .regular16,
-                                                textColor: .black)
+                                                textColor: .textPrimaryColor)
     let cancelBtn = ButtonFactory.createButton("Cancel",
                                                font: .bold16,
-                                               textColor: .black,
+                                               textColor: .textPrimaryColor,
                                                bgColor: .white)
     let okBtn = ButtonFactory.createButton("OK",
                                            font: .bold16,
-                                           textColor: .black,
+                                           textColor: .textPrimaryColor,
                                            bgColor: .white)
     let lineView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(hex: "#979797")
+        view.backgroundColor = .textPrimaryColor
         return view
     }()
     

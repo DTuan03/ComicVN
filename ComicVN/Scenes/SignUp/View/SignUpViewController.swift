@@ -40,7 +40,9 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
                                                          font: .medium18,
                                                          textAlignment: .left,
                                                          rounded: true)
-        textField.imageLeftView(image: "", placeholder: "email")
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
         return textField
     }()
 
@@ -48,7 +50,9 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
         let textField = TextFieldFactory.createTextField(placeholder: "email",
                                                          font: .medium18,
                                                          rounded: true)
-        textField.imageLeftView(image: "", placeholder: "email")
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
         return textField
     }()
     lazy var passTextField: UITextField = {
@@ -56,8 +60,11 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
                                                         font: .medium18,
                                                         textAlignment: .left,
                                                         rounded: true)
-        textField.imageLeftView(image: "", placeholder: "passWord")
-        textField.imageRightView(image: "eyes", placeholder: "")
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
+        textField.imageRightView(image: "eyebrow", placeholder: "")
+        textField.isSecureTextEntry = true
         return textField
     }()
     lazy var signUpButton = ButtonFactory.createButton("signUp",
@@ -65,7 +72,7 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
     lazy var acceptTermsLabel: UILabel = {
         let label = LabelFactory.createLabel(text: "acceptTerms",
                                              font: .regular14,
-                                             textColor: UIColor(hex: "#434040"),
+                                             textColor: .textSecondaryColor,
                                              textAlignment: .center)
         label.highlightText(
             fullText: NSLocalizedString("acceptTerms", comment: ""),
@@ -76,7 +83,7 @@ class SignUpViewController: BaseViewController, NavigationViewDelegate {
     }()
     lazy var orLoginLabel = LabelFactory.createLabel(text: "orLoginWithSocialMedia",
                                                      font: .regular16,
-                                                     textColor: UIColor(hex: "#434040"),
+                                                     textColor: .textSecondaryColor,
                                                      textAlignment: .center)
     lazy var googleButton = {
         let btn =  ButtonFactory.createButton("googleLogin", image: UIImage(named: "logoGG"), font: .medium16, textColor: .black, bgColor: UIColor(hex: "#F6F6F6"), rounded: true)

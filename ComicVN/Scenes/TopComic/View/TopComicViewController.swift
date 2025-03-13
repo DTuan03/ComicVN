@@ -27,10 +27,9 @@ class TopComicViewController: BaseViewController {
     ]
     
     lazy var attributeNormal: [NSAttributedString.Key: Any] = [
-        .foregroundColor: UIColor.black,
+        .foregroundColor: UIColor.textPrimaryColor,
         .font: UIFont.medium18
     ]
-    
     
     lazy var segmentedControl: UISegmentedControl = {
         let items = ["Top tuần", "Top tháng", "Top đánh giá"]
@@ -67,7 +66,8 @@ class TopComicViewController: BaseViewController {
         tableView.backgroundColor = .white
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: -2, left: 0, bottom: 0, right: 0)
-        tableView.delegate = self
+        tableView.showsVerticalScrollIndicator = false
+        tableView.backgroundColor = .backgroundColor
         tableView.dataSource = self
         return tableView
     }()
@@ -178,11 +178,18 @@ extension TopComicViewController: UITableViewDataSource {
         }
         let model = viewModel.items.value[indexPath.item]
         cell.configData(with: model)
-        
+        cell.indexPath = indexPath
+        cell.delegate = self
         return cell
     }
 }
 
-extension TopComicViewController: UITableViewDelegate {
+extension TopComicViewController: TopComicDelegateCell {
+    func didTapTopComicCell(indexPath: IndexPath) {
+        let detailComicVC = DetailComicViewController()
+        detailComicVC.slug = viewModel.items.value[indexPath.item].slug
+        navigationController?.pushViewController(detailComicVC, animated: true)
+    }
+    
     
 }

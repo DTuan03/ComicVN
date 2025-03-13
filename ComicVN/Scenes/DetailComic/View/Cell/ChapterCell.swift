@@ -22,6 +22,7 @@ class ChapterCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = UIColor.white
         setupUI()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(cellTapped))
         self.addGestureRecognizer(tapGesture)

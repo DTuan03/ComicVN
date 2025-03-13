@@ -20,15 +20,20 @@ class LoginViewController: BaseViewController {
         let textField = TextFieldFactory.createTextField(placeholder: "email",
                                                          font: .medium18,
                                                          rounded: true)
-        textField.imageLeftView(image: "", placeholder: "email")
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
         return textField
     }()
     lazy var passTextField: UITextField = {
         let textField = TextFieldFactory.createTextField(placeholder: "password",
                                                          font: .medium18,
                                                          rounded: true)
-        textField.imageLeftView(image: "", placeholder: "passWord")
-        textField.imageRightView(image: "eyes", placeholder: "")
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
+        textField.leftView = paddingView
+        textField.leftViewMode = .always
+        textField.imageRightView(image: "eyebrow", placeholder: "")
+        textField.isSecureTextEntry = true
         return textField
     }()
     
@@ -40,7 +45,7 @@ class LoginViewController: BaseViewController {
                                                    textAlignment: .center)
     let orLoginLabel = LabelFactory.createLabel(text: "orLoginWithSocialMedia",
                                                 font: .regular16,
-                                                textColor: UIColor(hex: "#434040"),
+                                                textColor: .textSecondaryColor,
                                                 textAlignment: .center)
     let googleButton: UIButton = {
         let btn = ButtonFactory.createButton("googleLogin",
@@ -72,6 +77,7 @@ class LoginViewController: BaseViewController {
     
     // MARK: SETUP UI
     override func setupUI() {
+        view.backgroundColor = .backgroundColor
         view.addSubview(imageView)
         imageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(97)
@@ -125,12 +131,33 @@ class LoginViewController: BaseViewController {
         let signUpLabelTap = UITapGestureRecognizer(target: self, action: #selector(navigationToSignUp))
         signUpLabel.addGestureRecognizer(signUpLabelTap)
         loginButton.addTarget(self, action: #selector(signIn), for: .touchUpInside)
+        
+        let forgotPassLabelTap = UITapGestureRecognizer(target: self, action: #selector(navigationToForgot))
+        forgotPassLabel.addGestureRecognizer(forgotPassLabelTap)
+        
+//        googleButton.rx.tap.subscribe(onNext: { [weak self] in
+//            guard let self = self else { return }
+//            AuthManager.shared.signInWithGoogle(presenting: self, completion: { result in
+//                switch result {
+//                case .success(let user):
+//                    UserDefaults.standard.set(user.userId, forKey: "userId")
+//                    navigationController?.pushViewController(HomeViewController(), animated: true)
+//                case .failure(let error):
+//                    UIAlertFactory.showAlert(on: self, message: "Đăng nhập thất bại rồi!")
+//                }}
+//            )
+//        })
     }
     
     // MARK: Chuyen man hinh sang dang ky
     @objc func navigationToSignUp() {
         let signUpVC = SignUpViewController()
         navigationController?.pushViewController(signUpVC, animated: true)
+    }
+    // MARK: Chuyen man hinh sang quen mat khau
+    @objc func navigationToForgot() {
+        let forgotVC = ForgotViewController()
+        navigationController?.pushViewController(forgotVC, animated: true)
     }
     
     @objc func signIn() {

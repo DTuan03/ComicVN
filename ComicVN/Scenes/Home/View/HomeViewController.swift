@@ -18,17 +18,21 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     }()
     let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true,
                                                         bounces: false)
-    let contentView = UIView()
+    lazy var contentView = {
+        let view = UIView()
+        view.backgroundColor = .backgroundColor
+        return view
+    }()
     
     let trendingLabel = LabelFactory.createLabel(text: "trending",
                                                  font: .bold16,
-                                                 textColor: UIColor(hex: "#434040"))
+                                                 textColor: .textSecondaryColor)
     let newComicLabel = LabelFactory.createLabel(text: "newComics",
                                                  font: .bold16,
-                                                 textColor: UIColor(hex: "#434040"))
+                                                 textColor: .textSecondaryColor)
     let categoryLabel = LabelFactory.createLabel(text: "category",
                                                  font: .bold18,
-                                                 textColor: UIColor(hex: "#434040"))
+                                                 textColor: .textSecondaryColor)
     
     let moreOptionsImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     let moreOptionsnNewImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))

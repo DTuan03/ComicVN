@@ -22,4 +22,24 @@ extension UIColor {
         
         self.init(red: red, green: green, blue: blue, alpha: alpha)
     }
+    
+    static let primaryColor = UIColor { traitCollection in
+        return traitCollection.userInterfaceStyle == .light ? UIColor(hex: "#FF7B00") : UIColor(hex: "#FF7B00")
+    }
+    
+    static let textPrimaryColor = UIColor { traitCollection in
+        return traitCollection.userInterfaceStyle == .light ? UIColor(hex: "#000000") : UIColor(hex: "#FFFFFF")
+    }
+    
+    static let textSecondaryColor = UIColor { traitCollection in
+        return traitCollection.userInterfaceStyle == .light ? UIColor(hex: "#434040") : UIColor(hex: "#FFFFFF")
+    }
+    
+    static let backgroundColor = UIColor { traitCollection in
+        return traitCollection.userInterfaceStyle == .light ? UIColor(hex: "#FFFFFF") : UIColor(hex: "#000000")
+    }
+    
+    static let backgroundSecondaryColor = UIColor { traitCollection in
+        return traitCollection.userInterfaceStyle == .light ? UIColor(hex: "#FF7B00", alpha: 0.11) : UIColor(hex: "#FF9E4A", alpha: 0.16)
+    }
 }

@@ -14,11 +14,11 @@ class DetailComicViewController: BaseViewController {
     let userId = UserDefaults.standard.value(forKey: "userId")
     var slug: String?
     var isSelected: Bool = false
+    var isSort: Bool = false
     lazy var backBtn = ButtonFactory.createButton(image: .arrowLeft,
                                                   bgColor: .clear)
     lazy var followBtn = {
-        let btn = ButtonFactory.createButton(image: .follow,
-                                             font: .medium14,
+        let btn = ButtonFactory.createButton(font: .medium14,
                                              textColor: .white,
                                              bgColor: .clear)
         return btn
@@ -101,7 +101,7 @@ class DetailComicViewController: BaseViewController {
     
     lazy var menuChapterIV = ImageViewFactory.createImageView(image: .menuChapter)
     lazy var lineVerticalIV = ImageViewFactory.createImageView(image: .lineVertical)
-    lazy var sortIV = ImageViewFactory.createImageView(image: .desc)
+    lazy var sortIV = ImageViewFactory.createImageView(image: .asc)
     
     lazy var ivStackView = [menuChapterIV, lineVerticalIV, sortIV].hStack(8)
 
@@ -112,7 +112,6 @@ class DetailComicViewController: BaseViewController {
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
         tableView.register(DescribeCell.self, forCellReuseIdentifier: DescribeCell.identifier)
-        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
@@ -123,7 +122,6 @@ class DetailComicViewController: BaseViewController {
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(ChapterCell.self, forCellReuseIdentifier: ChapterCell.identifier)
-        tableView.delegate = self
         tableView.dataSource = self
         return tableView
     }()
@@ -131,7 +129,15 @@ class DetailComicViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         guard let slug = slug else {return}
+        guard let userId = userId as? String else {return}
         viewModel.fetchDetailComic(for: slug)
+        if viewModel.checkedBookmark(userId: userId, slug: slug) {
+            followBtn.setImage(.followed, for: .normal)
+            isSelected = true
+        } else {
+            followBtn.setImage(.follow, for: .normal)
+            isSelected = false
+        }
         setupData()
     }
     
@@ -235,18 +241,52 @@ class DetailComicViewController: BaseViewController {
     }
     
     override func setupEvent() {
-        backBtn.rx.tap.subscribe(onNext: { [weak self] in
+        backBtn.rx.tap
+            .bind { [weak self] in self?.navigationController?.popViewController(animated: true) }
+            .disposed(by: disposeBag)
+        
+        followBtn.rx.tap.subscribe(onNext: { [weak self] in
             guard let self = self else {return}
-            navigationController?.popViewController(animated: true)
+            guard let userId = userId as? String else {
+                print("userId không hợp lệ")
+                return
+            }
+            guard let slug = slug else {
+                print("slug không hợp lệ")
+                return
+            }
+            let bookmarkModel = BookmarkRealmModel()
+            bookmarkModel.userId = userId
+            bookmarkModel.image = viewModel.itemDetailComics.value?.image
+            bookmarkModel.name = viewModel.itemDetailComics.value?.name ?? "Đang cập nhật"
+            bookmarkModel.author = viewModel.itemDetailComics.value?.describe[2].value ?? "Đang cập nhật"
+            bookmarkModel.category = viewModel.itemDetailComics.value?.describe[3].value ?? "Đang cập nhật"
+            bookmarkModel.totalChapter = viewModel.itemDetailComics.value?.describe[1].value ?? "Đang cập nhật"
+            bookmarkModel.slug = slug
+            
+            if isSelected {
+                self.viewModel.deleteBookmarkComic(userId: userId, slug: slug)
+                DispatchQueue.main.async {
+                    self.followBtn.setImage(.follow, for: .normal)
+                }
+            } else {
+                self.viewModel.saveBookmarkComic(for: bookmarkModel)
+                DispatchQueue.main.async {
+                    self.followBtn.setImage(.followed, for: .normal)
+                }
+            }
+            isSelected.toggle()
         })
         .disposed(by: disposeBag)
         
         viewModel.itemDetailComics.subscribe(onNext: { [weak self] item in
             guard let self = self else {return}
             DispatchQueue.main.async {
-                self.image.kf.setImage(with: item?.image)
+                let url = URL(string: item?.image ?? "")
+                self.image.kf.setImage(with: url)
                 self.titleLabel.text = item?.name
                 self.descripTableView.reloadData()
+                self.chapterTableView.reloadData()
             }
         })
         .disposed(by: disposeBag)
@@ -269,6 +309,22 @@ class DetailComicViewController: BaseViewController {
                 }
             })
             .disposed(by: disposeBag)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(sortAsc))
+        sortIV.addGestureRecognizer(tapGesture)
+    }
+    @objc func sortAsc() {
+        if isSort {
+            isSort = false
+            sortIV.image = .asc
+            viewModel.sortAscChapter()
+            chapterTableView.contentOffset = CGPoint(x: 0, y: 0)
+        } else {
+            isSort = true
+            sortIV.image = .desc
+            viewModel.sortDescChapter()
+            chapterTableView.contentOffset = CGPoint(x: 0, y: 0)
+        }
     }
     
     private func updateBottomLineSegment(at index: Int) {
@@ -328,20 +384,6 @@ extension DetailComicViewController: UITableViewDataSource {
             return cell
         }
     }
-}
-
-extension DetailComicViewController: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        if tableView == chapterTableView {
-//            print("Selected chapter: \(indexPath.row)")
-//            let readComicVC = ReadComicVC()
-//            readComicVC.chapterUrl = viewModel.itemDetailComics.value?.chapter[indexPath.row].url
-//            navigationController?.pushViewController(readComicVC, animated: true)
-//            print(viewModel.itemDetailComics.value?.chapter[indexPath.row].url ?? "")
-//        } else {
-//            print("Selected chapter: \(indexPath.row)")
-//        }
-//    }
 }
 
 extension DetailComicViewController: ChapterCellDelegate {

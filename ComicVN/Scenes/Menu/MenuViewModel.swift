@@ -63,4 +63,8 @@ class MenuViewModel {
         let user = realm?.objects(User.self).filter("userId == %@", userId).first
         return user?.name ?? "Người dùng"
     }
+    
+    func countComicSaved() -> Int {
+        return RealmHelper.get(BookmarkRealmModel.self).count
+    }
 }

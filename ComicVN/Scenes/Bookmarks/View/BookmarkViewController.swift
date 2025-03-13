@@ -34,6 +34,9 @@ class BookmarkViewController: BaseViewController {
         tableView.isScrollEnabled = true
         tableView.showsVerticalScrollIndicator = false
         tableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        tableView.backgroundColor = .backgroundColor
+        tableView.dataSource = self
+        
         return tableView
     }()
     
@@ -48,7 +51,7 @@ class BookmarkViewController: BaseViewController {
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview()
         }
-
+        
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(navigationView.snp.bottom).offset(32)
             make.left.equalToSuperview().offset(18)
@@ -69,11 +72,8 @@ class BookmarkViewController: BaseViewController {
             make.right.equalToSuperview().inset(26)
             make.bottom.equalToSuperview()
         }
-        
-        tableView.delegate = self
-        tableView.dataSource = self
     }
-
+    
     override func bindState() {
         viewModel.itemsBookmark
             .subscribe(onNext: { [weak self] newItems in
@@ -90,8 +90,8 @@ class BookmarkViewController: BaseViewController {
     @objc func deleteBtnAction() {
         let popUpVC = CustomPopupViewController()
         popUpVC.configure(onOk: {
+            self.viewModel.deleteAllComic()
             self.viewModel.itemsBookmark.accept([])
-            print(self.viewModel.itemsBookmark.value.count)
         })
         popUpVC.modalPresentationStyle = .overCurrentContext
         self.present(popUpVC, animated: false, completion: nil)
@@ -129,10 +129,16 @@ extension BookmarkViewController: UITableViewDataSource {
         
         let model = viewModel.itemsBookmark.value[indexPath.row]
         cell.configData(with: model)
+        cell.indexPath = indexPath
+        cell.delegate = self
         return cell
     }
 }
 
-extension BookmarkViewController: UITableViewDelegate {
-    
+extension BookmarkViewController: BookmarkDelegateCell {
+    func didTapBookmarkCell(indexPath: IndexPath) {
+        let detailComicVC = DetailComicViewController()
+        detailComicVC.slug = viewModel.itemsBookmark.value[indexPath.item].slug
+        navigationController?.pushViewController(detailComicVC, animated: true)
+    }
 }

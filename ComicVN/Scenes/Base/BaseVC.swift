@@ -14,7 +14,7 @@ class BaseViewController: UIViewController {
         
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = .backgroundColor
         self.navigationController?.isNavigationBarHidden = true
         addDismissKeyboard()
         bindState()

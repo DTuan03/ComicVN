@@ -15,6 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowCene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowCene)
         
+        if let savedStyle = UserDefaults.standard.value(forKey: "darkModeEnabled") as? Int {
+            window?.overrideUserInterfaceStyle = UIUserInterfaceStyle(rawValue: savedStyle) ?? .unspecified
+        }
+
         let userId = UserDefaults.standard.string(forKey: "userId") ?? ""
         let firstVC = userId.isEmpty ? LoginViewController() : HomeViewController()
         let navigation = UINavigationController(rootViewController: firstVC)

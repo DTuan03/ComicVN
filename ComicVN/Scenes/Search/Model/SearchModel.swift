@@ -15,6 +15,10 @@ struct SearchModel {
     let slug: String?
 }
 
+struct FilterModel {
+    let category: String?
+}
+
 // MARK: - Welcome
 struct WelcomeSearch: Codable {
     let status, message: String

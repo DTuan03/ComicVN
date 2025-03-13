@@ -12,7 +12,7 @@ class CustomPopupViewController: UIViewController {
     
     let containerView: UIView = {
        let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .backgroundColor
         view.layer.cornerRadius = 10
         return view
     }()
@@ -26,11 +26,11 @@ class CustomPopupViewController: UIViewController {
     let cancelBtn = ButtonFactory.createButton("Cancel",
                                                font: .bold16,
                                                textColor: .textPrimaryColor,
-                                               bgColor: .white)
+                                               bgColor: .backgroundColor)
     let okBtn = ButtonFactory.createButton("OK",
                                            font: .bold16,
                                            textColor: .textPrimaryColor,
-                                           bgColor: .white)
+                                           bgColor: .backgroundColor)
     let lineView: UIView = {
         let view = UIView()
         view.backgroundColor = .textPrimaryColor

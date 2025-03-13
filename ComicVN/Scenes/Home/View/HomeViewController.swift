@@ -16,8 +16,13 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     lazy var navigationView = {
         NavigationViewFactory.createMainNavigationView(leftImage: UIImage(named: "menu"), title: "home", right1Image: UIImage(named: "add"), right2Image: UIImage(named: "search"), delegate: self)
     }()
-    let scrollView = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true,
-                                                        bounces: false)
+    let scrollView = {
+        let sv = ScrollViewFactory.createScrollView(showsVerticalScrollIndicator: true,
+                                           bounces: false)
+        sv.backgroundColor = .backgroundColor
+        sv.showsVerticalScrollIndicator = false
+        return sv
+    }()
     lazy var contentView = {
         let view = UIView()
         view.backgroundColor = .backgroundColor
@@ -33,7 +38,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
     let categoryLabel = LabelFactory.createLabel(text: "category",
                                                  font: .bold18,
                                                  textColor: .textSecondaryColor)
-    
     let moreOptionsImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     let moreOptionsnNewImage = ImageViewFactory.createImageView(image: UIImage(named: "moreOption"))
     
@@ -56,7 +60,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             make.left.right.equalToSuperview()
         }
         
-        scrollView.delegate = self
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(navigationView.snp.bottom).offset(1)
             make.left.right.bottom.equalToSuperview()
@@ -113,7 +116,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         }
         detailCollectionView.register(DetailCell.self, forCellWithReuseIdentifier: DetailCell.identifier)
         detailCollectionView.dataSource = self
-        detailCollectionView.delegate = self
     }
     
     private func setupTrendingCollectionView() {
@@ -126,7 +128,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         
         trendingCollectionView.register(TrendingCell.self, forCellWithReuseIdentifier: TrendingCell.identifier)
         trendingCollectionView.dataSource = self
-        trendingCollectionView.delegate = self
     }
     
     private func setupNewComicCollectionView() {
@@ -138,7 +139,6 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
         }
         newComicCollectionView.register(TrendingCell.self, forCellWithReuseIdentifier: TrendingCell.identifier)
         newComicCollectionView.dataSource = self
-        newComicCollectionView.delegate = self
     }
     
     private func setupCategoryCollectionView() {
@@ -147,11 +147,10 @@ class HomeViewController: BaseViewController, NavigationViewDelegate {
             make.top.equalTo(categoryLabel.snp.bottom).offset(17)
             make.left.right.equalToSuperview()
             make.height.greaterThanOrEqualTo(185)
-            make.bottom.equalToSuperview().offset(-40)
+            make.bottom.equalToSuperview().offset(0)
         }
         categoryCollectionView.register(ListCell.self, forCellWithReuseIdentifier: ListCell.identifier)
         categoryCollectionView.dataSource = self
-        categoryCollectionView.delegate = self
         categoryCollectionView.isUserInteractionEnabled = true
     }
     
@@ -259,9 +258,6 @@ extension HomeViewController: UICollectionViewDataSource {
             return cell
         }
     }
-}
-
-extension HomeViewController: UICollectionViewDelegate {
 }
 
 extension HomeViewController: DetailDelegateCell, TrendingDelegateCell, ListDelegateCell {

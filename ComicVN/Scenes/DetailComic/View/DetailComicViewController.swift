@@ -119,6 +119,7 @@ class DetailComicViewController: BaseViewController {
     lazy var chapterTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
+        tableView.separatorStyle = .none
         tableView.isScrollEnabled = true
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         tableView.register(ChapterCell.self, forCellReuseIdentifier: ChapterCell.identifier)
@@ -138,7 +139,7 @@ class DetailComicViewController: BaseViewController {
             followBtn.setImage(.follow, for: .normal)
             isSelected = false
         }
-        setupData()
+        setupEvent()
     }
     
     override func setupUI() {
@@ -310,10 +311,10 @@ class DetailComicViewController: BaseViewController {
             })
             .disposed(by: disposeBag)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(sortAsc))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(sort))
         sortIV.addGestureRecognizer(tapGesture)
     }
-    @objc func sortAsc() {
+    @objc func sort() {
         if isSort {
             isSort = false
             sortIV.image = .asc
@@ -355,6 +356,7 @@ extension DetailComicViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: DescribeCell.identifier, for: indexPath) as? DescribeCell else {
                 return UITableViewCell()
             }
+            cell.selectionStyle = .none
             cell.setupUI(index: indexPath)
             guard let model = viewModel.itemDetailComics.value?.describe[indexPath.row] else {
                 return UITableViewCell()

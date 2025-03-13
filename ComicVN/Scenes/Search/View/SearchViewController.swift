@@ -136,7 +136,6 @@ class SearchViewController: BaseViewController, NavigationViewDelegate {
     
     @objc func segmentChanged(_ sender: UISegmentedControl) {
         sender.selectedSegmentIndex = 0
-        print("Selected Segment Index: \(sender.selectedSegmentIndex)")
         filterCategoryTableView.isHidden = false
     }
     

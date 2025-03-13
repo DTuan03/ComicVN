@@ -126,7 +126,7 @@ extension BookmarkViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: BookmarkCell.identifier, for: indexPath) as? BookmarkCell else {
             return UITableViewCell()
         }
-        
+        cell.selectionStyle = .none
         let model = viewModel.itemsBookmark.value[indexPath.row]
         cell.configData(with: model)
         cell.indexPath = indexPath

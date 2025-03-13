@@ -176,6 +176,7 @@ extension TopComicViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TopComicCell.identifier, for: indexPath) as? TopComicCell else { return UITableViewCell()
         }
+        cell.selectionStyle = .none
         let model = viewModel.items.value[indexPath.item]
         cell.configData(with: model)
         cell.indexPath = indexPath
